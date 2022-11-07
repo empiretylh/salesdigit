@@ -10,14 +10,13 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import {COLOR} from '../Database';
+import {COLOR} from '../AssetDatabase';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 const Login = ({navigation}) => {
   const [visible, setVisible] = React.useState(false);
 
   const username = React.useRef();
   const password = React.useRef();
-  
 
   return (
     <ScrollView>
