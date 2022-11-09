@@ -11,6 +11,14 @@ class Database {
     console.log('Resigerrrying');
     return axios.post('/auth/salesdigit/register/', data);
   }
+
+  sales2d(data) {
+    return axios.post('/sd/api/salestwodigit/', data);
+  }
+
+  getsold2d(data) {
+    return axios.get('/sd/api/salestwodigit/');
+  }
 }
 
 export default new Database();

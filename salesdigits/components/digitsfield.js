@@ -5,8 +5,8 @@ import {COLOR, numberWithCommas, STYLE as s} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TwoDigitsContext} from '../context/Context';
 const DigitsField = ({item, index}) => {
-  const [digits, setDigits] = useState(item.digits);
-  const [amount, setAmount] = useState(item.amount);
+  const [digits, setDigits] = useState(item.digits ? '' : item.digits);
+  const [amount, setAmount] = useState(item.amount ? 0 : item.amount);
   const {digitsData, setDigitsData, newForm, DeleteDigits} =
     useContext(TwoDigitsContext);
 
@@ -54,13 +54,6 @@ const DigitsField = ({item, index}) => {
         ref={amountfield}
         selectTextOnFocus={true}
       />
-      <TouchableOpacity
-        onLongPress={() => {
-          console.log('Close Presss Out');
-          DeleteDigits(index);
-        }}>
-        <Icon name="close-circle" color={COLOR.deleteColor} size={20} />
-      </TouchableOpacity>
     </View>
   );
 };

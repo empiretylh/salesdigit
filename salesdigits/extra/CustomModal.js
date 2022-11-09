@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   BackHandler,
   ScrollView,
+  Dimensions,
   Alert,
 } from 'react-native';
-
 
 export const MessageModalNormal = ({
   show,
@@ -35,14 +35,14 @@ export const MessageModalNormal = ({
       }}
       transparent
       animationType="fade"
-    //   onRequestClose={() => (nobackExit ? a.asc(onClose) : onClose())}
-      >
+      //   onRequestClose={() => (nobackExit ? a.asc(onClose) : onClose())}
+    >
       <View
         style={{
           flex: 1,
 
-          width: C.windowWidth * 100,
-          height: C.windowHeight * 100,
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
           backgroundColor: 'rgba(52, 52, 52, 0.8)',
 
           justifyContent: 'center',

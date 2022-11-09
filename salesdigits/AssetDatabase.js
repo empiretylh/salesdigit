@@ -48,6 +48,37 @@ export const STYLE = StyleSheet.create({
     fontWeight: '800',
     margin: 5,
   },
+  button: {
+    backgroundColor: COLOR.primary3d,
+    padding: 10,
+    color: 'white',
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 5,
+  },
+  normaltextsize: {
+    fontSize: 18,
+    color: 'black',
+  },
+  normalboldsize: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  divider: {
+    backgroundColor: COLOR.dividerColor,
+    width: '100%',
+    height: 2,
+    marginTop: 5,
+    marginBottom: 5,
+  },  
+  cell:{
+    borderColor:'black',
+    borderWidth:1,
+    padding:5,
+    minHeight:20,
+  }
 });
 
 export const IMAGE = {

@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useEffect, useCallback} from 'react';
+import React, {useState, useMemo, useEffect, useCallback, useRef} from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,28 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   StyleSheet,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {COLOR, numberWithCommas, STYLE as styles} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DigitsField from '../components/digitsfield';
 import {TwoDigitsContext} from '../context/Context';
-const Home = () => {
+import {useMutation} from '@tanstack/react-query';
+import data from '../server/data';
+import {MessageModalNormal} from '../extra/CustomModal';
+const Home = ({navigation}) => {
   const [showPF, setPF] = useState(false);
 
   const [digitsData, setDigitsData] = useState([{digits: '', amount: 0}]);
+
+  const [is_uploading, setIsUploading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+
+  const customer_field = useRef(0);
+  const cfieldref = useRef(0);
+  const pfieldref = useRef(0);
+  const phoneno_field = useRef(0);
 
   const newForm = useMemo(() => {
     let d = digitsData[digitsData.length - 1];
@@ -35,22 +48,80 @@ const Home = () => {
     return sumtotal;
   }, [digitsData]);
 
-  const DeleteDigits = digits => {
-    let digitsdata = [...digitsData];
-    let index = digitsdata.indexOf(e => e.digits === digits);
-    digitsdata.splice(index, 1);
-    setDigitsData(digitsdata);
-    console.log('Deleted Digits');
-  };
-
   const bridge_value = useMemo(
-    () => ({digitsData, setDigitsData, newForm, DeleteDigits}),
+    () => ({digitsData, setDigitsData, newForm}),
     [digitsData, setDigitsData],
   );
 
+  const salesDigit = useMutation(data.sales2d, {
+    onSuccess: () => {
+      setIsUploading(false);
+      setUploaded(true);
+      setDigitsData([{digits: '', amount: 0}]);
+      cfieldref.current.clear();
+      pfieldref.current.clear();
+    },
+    onMutate: () => {
+      setIsUploading(true);
+      setUploaded(false);
+      setDigitsData([{digits: '', amount: 0}]);
+    },
+    onError: e => {
+      setIsUploading(false);
+      console.log(e);
+    },
+  });
+
+  const SaveDigits = () => {
+    console.log(digitsData);
+    const SaveData = digitsData.filter(obj => obj.amount && obj.digits);
+    console.log('Saved Data ::::::', SaveData);
+    console.log(SaveData.length);
+    if (SaveData.length >= 1 && customer_field.current) {
+      salesDigit.mutate({
+        customername:
+          customer_field.current === 0 ? '' : customer_field.current,
+        phoneno: phoneno_field.current === 0 ? '' : phoneno_field.current,
+        digits: JSON.stringify(SaveData),
+        totalamount: SumValue,
+      });
+    } else {
+      Alert.alert('Cannot Save', 'Please Fill Required Fields', [
+        {titile: 'OK'},
+      ]);
+    }
+  };
+
   return (
     <TwoDigitsContext.Provider value={bridge_value}>
-      <View style={{flex: 1}}>
+      <MessageModalNormal show={is_uploading} width={'20%'}>
+        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+        <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
+      </MessageModalNormal>
+      <MessageModalNormal show={uploaded}>
+        <Text
+          style={{
+            color: COLOR.green,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            fontSize: 18,
+          }}>
+          Successfully Created Data
+        </Text>
+        <TouchableOpacity
+          style={{...styles.button, backgroundColor: COLOR.primary2d}}>
+          <Text style={{color: COLOR.black}}>Show Data</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{...styles.button, backgroundColor: COLOR.black}}
+          onPress={() => {
+            setUploaded(false);
+            navigation.navigate('stwod');
+          }}>
+          <Text style={{color: COLOR.white}}>Close</Text>
+        </TouchableOpacity>
+      </MessageModalNormal>
+      <ScrollView style={{flex: 1}} nestedScrollEnabled={true}>
         <Text
           style={{
             color: COLOR.black,
@@ -88,7 +159,12 @@ const Home = () => {
           </View>
           <View>
             <Text style={{color: COLOR.black, fontSize: 18}}>အမည်</Text>
-            <TextInput style={styles.textinput} placeholder={'အမည်'} />
+            <TextInput
+              style={styles.textinput}
+              placeholder={'အမည်'}
+              onChangeText={e => (customer_field.current = e)}
+              ref={cfieldref}
+            />
             <TouchableOpacity
               style={{flexDirection: 'row-reverse'}}
               onPress={() => setPF(prev => !prev)}>
@@ -107,6 +183,8 @@ const Home = () => {
                 style={styles.textinput}
                 placeholder={'ဖုန်းနံပါတ်'}
                 keyboardType={'number-pad'}
+                onChangeText={e => (phoneno_field.current = e)}
+                ref={pfieldref}
               />
             </View>
           ) : null}
@@ -120,7 +198,7 @@ const Home = () => {
             marginBottom: 5,
           }}
         />
-        <ScrollView style={{padding: 10}}>
+        <ScrollView style={{padding: 10}} nestedScrollEnabled={true}>
           <KeyboardAvoidingView>
             <View
               style={{
@@ -139,6 +217,7 @@ const Home = () => {
                 }}>
                 ဂဏန်း
               </Text>
+
               <Text
                 style={{
                   color: COLOR.black,
@@ -155,7 +234,21 @@ const Home = () => {
             ))}
           </KeyboardAvoidingView>
         </ScrollView>
-      </View>
+        <View style={{padding: 10}}>
+          <TouchableOpacity style={styles.button} onPress={() => SaveDigits()}>
+            <Text style={{...styles.normaltextsize, color: COLOR.white}}>
+              သိမ်းမည်
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('2dreport')}>
+            <Text style={{...styles.normaltextsize, color: COLOR.white}}>
+              2D စာရင်းချုပ်ကြည့်မည်
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </TwoDigitsContext.Provider>
   );
 };
