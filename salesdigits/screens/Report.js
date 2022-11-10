@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {useState, useMemo, useEffect, useCallback, useRef} from 'react';
 import * as React from 'react';
 
@@ -20,79 +21,7 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
 const Report = ({navigation}) => {
-  const [showPF, setPF] = useState(false);
-
-  const [digitsData, setDigitsData] = useState([{digits: '', amount: 0}]);
-
-  const [is_uploading, setIsUploading] = useState(false);
-  const [uploaded, setUploaded] = useState(false);
-
-  const customer_field = useRef(0);
-  const cfieldref = useRef(0);
-  const pfieldref = useRef(0);
-  const phoneno_field = useRef(0);
-
-  const newForm = useMemo(() => {
-    let d = digitsData[digitsData.length - 1];
-    if (d.amount > 0 && d.digits) {
-      setDigitsData(prev => [...prev].concat([{digits: '', amount: 0}]));
-    }
-  }, [digitsData]);
-
-  const SumValue = useMemo(() => {
-    let sumtotal = 0;
-    if (digitsData) {
-      digitsData.map((item, index) => {
-        let a = item.amount === '' ? 0 : item.amount;
-        sumtotal += parseInt(a);
-      });
-    }
-    return sumtotal;
-  }, [digitsData]);
-
-  const bridge_value = useMemo(
-    () => ({digitsData, setDigitsData, newForm}),
-    [digitsData, setDigitsData],
-  );
-
-  const salesDigit = useMutation(data.sales2d, {
-    onSuccess: () => {
-      setIsUploading(false);
-      setUploaded(true);
-      setDigitsData([{digits: '', amount: 0}]);
-      cfieldref.current.clear();
-      pfieldref.current.clear();
-    },
-    onMutate: () => {
-      setIsUploading(true);
-      setUploaded(false);
-      setDigitsData([{digits: '', amount: 0}]);
-    },
-    onError: e => {
-      setIsUploading(false);
-      console.log(e);
-    },
-  });
-
-  const SaveDigits = () => {
-    console.log(digitsData);
-    const SaveData = digitsData.filter(obj => obj.amount && obj.digits);
-    console.log('Saved Data ::::::', SaveData);
-    console.log(SaveData.length);
-    if (SaveData.length >= 1 && customer_field.current) {
-      salesDigit.mutate({
-        customername:
-          customer_field.current === 0 ? '' : customer_field.current,
-        phoneno: phoneno_field.current === 0 ? '' : phoneno_field.current,
-        digits: JSON.stringify(SaveData),
-        totalamount: SumValue,
-      });
-    } else {
-      Alert.alert('Cannot Save', 'Please Fill Required Fields', [
-        {titile: 'OK'},
-      ]);
-    }
-  };
+  const [searchtext, setSearchText] = useState('');
 
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
 
@@ -121,50 +50,75 @@ const Report = ({navigation}) => {
         });
       });
 
-      let finalresult = {};
+      let result = {};
 
-      var result = compund.map(item => {
-        if (!finalresult[item.number]) {
-          finalresult[item.number] = item;
+      compund.map(item => {
+        if (!result[item.number]) {
+          result[item.number] = item;
         } else {
-          finalresult[item.number].amount =
-            finalresult[item.number].amount + parseInt(item.amount);
+          result[item.number].amount =
+            result[item.number].amount + parseInt(item.amount);
         }
       });
 
-      return finalresult;
+      let fresult = Object.values(result);
+      let filter_finalresult = fresult.filter(item =>
+        item.number.includes(searchtext),
+      );
+      let sorted_finalresult;
+
+      sorted_finalresult = filter_finalresult.sort((a, b) => {
+        if (sorttype === 'digit') {
+          return parseInt(a.number) - parseInt(b.number);
+        } else if (sorttype === 'price') {
+          return parseInt(a.amount) - parseInt(b.amount);
+        } else {
+          return parseInt(a.number) - parseInt(b.number);
+        }
+      });
+
+      return sorted_finalresult;
     }
-  }, [sales_data]);
+  }, [sales_data, searchtext, sorttype]);
+
+  const [showSort, setShowSort] = useState(false);
+
+  const [sorttype, setSortype] = useState('digit');
+
+  const onCloseSort = () => {
+    setShowSort(false);
+  };
 
   return (
-    <TwoDigitsContext.Provider value={bridge_value}>
-      <MessageModalNormal show={is_uploading} width={'20%'}>
-        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
-        <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
-      </MessageModalNormal>
-      <MessageModalNormal show={uploaded}>
-        <Text
-          style={{
-            color: COLOR.green,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            fontSize: 18,
-          }}>
-          Successfully Created Data
-        </Text>
+    <>
+      <MessageModalNormal show={showSort} onClose={onCloseSort}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Icon name="funnel" size={20} color={COLOR.black} />
+          <Text style={{...styles.normalboldsize}}>Sort</Text>
+        </View>
         <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.primary2d}}>
-          <Text style={{color: COLOR.black}}>Show Data</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.black}}
+          style={styles.button}
           onPress={() => {
-            setUploaded(false);
-            navigation.navigate('stwod');
+            setSortype('price');
+            onCloseSort();
+            
           }}>
-          <Text style={{color: COLOR.white}}>Close</Text>
+          <Text style={{...styles.normalboldsize, color: 'white'}}>
+            Sort By Price
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={{...styles.normalboldsize, color: 'white'}}>
+            Sort By Digits
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={{...styles.normalboldsize, color: 'white'}}>
+            Sort By Name
+          </Text>
         </TouchableOpacity>
       </MessageModalNormal>
+
       <ScrollView style={{flex: 1}} nestedScrollEnabled={true}>
         <Text
           style={{
@@ -185,6 +139,7 @@ const Report = ({navigation}) => {
           <TextInput
             style={{flex: 1, padding: 0, margin: 0}}
             placeholder={'Search with Name or Digits'}
+            onChangeText={e => setSearchText(e)}
           />
           <Icon name="search" size={20} color={COLOR.black} />
         </View>
@@ -198,8 +153,7 @@ const Report = ({navigation}) => {
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               onPress={() => {
-                sales_data.refetch();
-                console.log('Sort');
+                setShowSort(true);
               }}>
               <Icon name="funnel" color={COLOR.black} size={20} />
             </TouchableOpacity>
@@ -207,6 +161,14 @@ const Report = ({navigation}) => {
               onPress={() => console.log('change style')}
               style={{marginLeft: 10}}>
               <Icon name="grid" color={COLOR.black} size={20} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                console.log('change style');
+                sales_data.refetch();
+              }}
+              style={{marginLeft: 10}}>
+              <Icon name="refresh" color={COLOR.black} size={20} />
             </TouchableOpacity>
           </View>
           <View>
@@ -221,7 +183,7 @@ const Report = ({navigation}) => {
             <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
             <ScrollView>
               {sales_data.data &&
-                Object.values(ComputeCompoundDigitsData).map((item, index) => (
+                ComputeCompoundDigitsData.map((item, index) => (
                   <Cell
                     key={index}
                     data={[item.number, item.amount]}
@@ -232,7 +194,7 @@ const Report = ({navigation}) => {
           </View>
         </ScrollView>
       </ScrollView>
-    </TwoDigitsContext.Provider>
+    </>
   );
 };
 
@@ -293,7 +255,7 @@ const Cell = ({data, index}) => {
           flex: 1,
           textAlign: 'right',
           ...styles.cell,
-          padding:5,
+          padding: 5,
         }}>
         {data[1]}
       </Text>

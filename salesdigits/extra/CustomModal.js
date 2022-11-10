@@ -35,7 +35,7 @@ export const MessageModalNormal = ({
       }}
       transparent
       animationType="fade"
-      //   onRequestClose={() => (nobackExit ? a.asc(onClose) : onClose())}
+      onRequestClose={() => (nobackExit ? Alert.alert('Exit','Are you sure want to exit ?',[{titile:'OK'}]) : onClose())}
     >
       <View
         style={{
