@@ -25,6 +25,9 @@ const Report = ({navigation}) => {
 
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
 
+
+  const [sorttype, setSortype] = useState('Digits');
+
   sales_data.data && console.log(sales_data.data.data);
 
   const SumTotalValue = useMemo(() => {
@@ -41,6 +44,7 @@ const Report = ({navigation}) => {
 
   const ComputeCompoundDigitsData = useMemo(() => {
     let compund = [];
+
 
     if (sales_data.data) {
       let data = sales_data.data.data;
@@ -68,14 +72,15 @@ const Report = ({navigation}) => {
       let sorted_finalresult;
 
       sorted_finalresult = filter_finalresult.sort((a, b) => {
-        if (sorttype === 'digit') {
-          return parseInt(a.number) - parseInt(b.number);
-        } else if (sorttype === 'price') {
-          return parseInt(a.amount) - parseInt(b.amount);
+        if (sorttype === 'Digits') {
+          return  parseInt(a.number) - parseInt(b.number);
+        } else if (sorttype === 'Price') {
+          return parseInt(b.amount) - parseInt(a.amount) ;
         } else {
           return parseInt(a.number) - parseInt(b.number);
         }
       });
+
 
       return sorted_finalresult;
     }
@@ -83,7 +88,6 @@ const Report = ({navigation}) => {
 
   const [showSort, setShowSort] = useState(false);
 
-  const [sorttype, setSortype] = useState('digit');
 
   const onCloseSort = () => {
     setShowSort(false);
@@ -99,20 +103,25 @@ const Report = ({navigation}) => {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            setSortype('price');
+            setSortype('Price');
             onCloseSort();
-            
           }}>
           <Text style={{...styles.normalboldsize, color: 'white'}}>
             Sort By Price
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}     onPress={() => {
+            setSortype('Digits');
+            onCloseSort();
+          }}>
           <Text style={{...styles.normalboldsize, color: 'white'}}>
             Sort By Digits
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=>{
+          setSortype('Name')
+          onCloseSort();
+        }}>
           <Text style={{...styles.normalboldsize, color: 'white'}}>
             Sort By Name
           </Text>
@@ -150,7 +159,8 @@ const Report = ({navigation}) => {
             justifyContent: 'space-between',
             padding: 10,
           }}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'column'}}>
+          <View style={{flexDirection:'row'}}>
             <TouchableOpacity
               onPress={() => {
                 setShowSort(true);
@@ -170,7 +180,9 @@ const Report = ({navigation}) => {
               style={{marginLeft: 10}}>
               <Icon name="refresh" color={COLOR.black} size={20} />
             </TouchableOpacity>
+            </View>
           </View>
+          <Text>Sorted By {sorttype}</Text>
           <View>
             <Text style={{...styles.normaltextsize, color: COLOR.black}}>
               {sales_data.data && numberWithCommas(SumTotalValue)} Ks
