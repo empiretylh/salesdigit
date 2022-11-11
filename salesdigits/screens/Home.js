@@ -109,7 +109,7 @@ const Home = ({navigation}) => {
           Successfully Created Data
         </Text>
         <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.primary2d}}>
+          style={{...styles.button, backgroundColor: COLOR.primary2d}} onPress={()=>navigation.navigate('2dreport')}>
           <Text style={{color: COLOR.black}}>Show Data</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -198,7 +198,7 @@ const Home = ({navigation}) => {
             marginBottom: 5,
           }}
         />
-        <ScrollView style={{padding: 10}} nestedScrollEnabled={true}>
+        <View style={{padding: 10}}>
           <KeyboardAvoidingView>
             <View
               style={{
@@ -233,7 +233,7 @@ const Home = ({navigation}) => {
               <DigitsField key={index} item={item} index={index} />
             ))}
           </KeyboardAvoidingView>
-        </ScrollView>
+        </View>
         <View style={{padding: 10}}>
           <TouchableOpacity style={styles.button} onPress={() => SaveDigits()}>
             <Text style={{...styles.normaltextsize, color: COLOR.white}}>

@@ -5,6 +5,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from './Home';
 import {View, Text} from 'react-native';
 import Report from './Report';
+import HistoryReport from './HistoryReport';
 
 const Drawer = createDrawerNavigator();
 
@@ -25,7 +26,14 @@ export default function MyDrawer() {
           title: 'Report',
         })}
       />
-      <Drawer.Screen name="Sales" component={Home} />
+       <Drawer.Screen
+        name="2dhistoryreport"
+        component={HistoryReport}
+        options={() => ({
+          title: 'Save Report & History Report',
+        })}
+      />
+    
     </Drawer.Navigator>
   );
 }

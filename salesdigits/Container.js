@@ -7,6 +7,7 @@ import {useState, useEffect, useMemo} from 'react';
 import SignUp from './auth/Signup';
 import Login from './auth/Login';
 import Main from './screens/main';
+import LuckyReport from './screens/LuckyReport';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import axios from 'axios';
@@ -64,6 +65,7 @@ const Container = () => {
             ) : (
               <>
                 <Stack.Screen name="main" component={Main} />
+                <Stack.Screen name="luckyreport" component={LuckyReport} />
               </>
             )}
           </Stack.Navigator>

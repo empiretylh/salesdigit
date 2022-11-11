@@ -25,8 +25,12 @@ const Report = ({navigation}) => {
 
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
 
+  const [view, setView] =
+    useState(true); /*true = Digits View And false = User View */
 
   const [sorttype, setSortype] = useState('Digits');
+
+  const [detailData, setDetailData] = useState();
 
   sales_data.data && console.log(sales_data.data.data);
 
@@ -45,56 +49,86 @@ const Report = ({navigation}) => {
   const ComputeCompoundDigitsData = useMemo(() => {
     let compund = [];
 
-
-    if (sales_data.data) {
-      let data = sales_data.data.data;
-      data.map((item, index) => {
-        item.two_sales_digits.map((item, index) => {
-          compund.push({number: item.number, amount: parseInt(item.amount)});
+    if (view) {
+      if (sales_data.data) {
+        let data = sales_data.data.data;
+        data.map((item, index) => {
+          item.two_sales_digits.map((item, index) => {
+            compund.push({number: item.number, amount: parseInt(item.amount)});
+          });
         });
-      });
 
-      let result = {};
+        let result = {};
 
-      compund.map(item => {
-        if (!result[item.number]) {
-          result[item.number] = item;
-        } else {
-          result[item.number].amount =
-            result[item.number].amount + parseInt(item.amount);
-        }
-      });
+        compund.map(item => {
+          if (!result[item.number]) {
+            result[item.number] = item;
+          } else {
+            result[item.number].amount =
+              result[item.number].amount + parseInt(item.amount);
+          }
+        });
 
-      let fresult = Object.values(result);
-      let filter_finalresult = fresult.filter(item =>
-        item.number.includes(searchtext),
-      );
-      let sorted_finalresult;
+        let fresult = Object.values(result);
+        let filter_finalresult = fresult.filter(item =>
+          item.number.includes(searchtext),
+        );
+        let sorted_finalresult;
 
-      sorted_finalresult = filter_finalresult.sort((a, b) => {
-        if (sorttype === 'Digits') {
-          return  parseInt(a.number) - parseInt(b.number);
-        } else if (sorttype === 'Price') {
-          return parseInt(b.amount) - parseInt(a.amount) ;
-        } else {
-          return parseInt(a.number) - parseInt(b.number);
-        }
-      });
+        sorted_finalresult = filter_finalresult.sort((a, b) => {
+          if (sorttype === 'Digits') {
+            return parseInt(a.number) - parseInt(b.number);
+          } else if (sorttype === 'Price') {
+            return parseInt(b.amount) - parseInt(a.amount);
+          } else {
+            return parseInt(a.number) - parseInt(b.number);
+          }
+        });
 
+        return sorted_finalresult;
+      }
+    }
+  }, [sales_data, searchtext, sorttype]);
 
-      return sorted_finalresult;
+  const USalesData = useMemo(() => {
+    let compund = [];
+
+    if (view === false) {
+      if (sales_data.data) {
+        let data = sales_data.data.data;
+
+        let search_result = data.filter(e =>
+          e.customername.toLowerCase().includes(searchtext.toLowerCase()),
+        );
+
+        let sorted_finalresult = search_result.sort((a, b) => {
+          if (sorttype === 'Name') {
+            return a.customername - b.customername;
+          } else if (sorttype === 'Price') {
+            return parseInt(b.totalprice) - parseInt(a.totalprice);
+          } else {
+            return parseInt(a.number) - parseInt(b.number);
+          }
+        });
+
+        return sorted_finalresult;
+      }
     }
   }, [sales_data, searchtext, sorttype]);
 
   const [showSort, setShowSort] = useState(false);
 
-
   const onCloseSort = () => {
     setShowSort(false);
   };
 
+  const [detailshow,setDetailshow] = useState(false)
+
+  const onDetailShow = ()=>{setDetailshow(prev=>!prev)}
+
   return (
     <>
+      <UserDetail show={detailshow} data={detailData} onClose={onDetailShow} />
       <MessageModalNormal show={showSort} onClose={onCloseSort}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Icon name="funnel" size={20} color={COLOR.black} />
@@ -110,7 +144,9 @@ const Report = ({navigation}) => {
             Sort By Price
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}     onPress={() => {
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
             setSortype('Digits');
             onCloseSort();
           }}>
@@ -118,17 +154,19 @@ const Report = ({navigation}) => {
             Sort By Digits
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={()=>{
-          setSortype('Name')
-          onCloseSort();
-        }}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            setSortype('Name');
+            onCloseSort();
+          }}>
           <Text style={{...styles.normalboldsize, color: 'white'}}>
             Sort By Name
           </Text>
         </TouchableOpacity>
       </MessageModalNormal>
 
-      <ScrollView style={{flex: 1}} nestedScrollEnabled={true}>
+      <View style={{flex: 1}}>
         <Text
           style={{
             color: COLOR.black,
@@ -160,29 +198,35 @@ const Report = ({navigation}) => {
             padding: 10,
           }}>
           <View style={{flexDirection: 'column'}}>
-          <View style={{flexDirection:'row'}}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowSort(true);
-              }}>
-              <Icon name="funnel" color={COLOR.black} size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => console.log('change style')}
-              style={{marginLeft: 10}}>
-              <Icon name="grid" color={COLOR.black} size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                console.log('change style');
-                sales_data.refetch();
-              }}
-              style={{marginLeft: 10}}>
-              <Icon name="refresh" color={COLOR.black} size={20} />
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowSort(true);
+                }}>
+                <Icon name="funnel" color={COLOR.black} size={20} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('change style');
+                  setView(prev => !prev);
+                }}
+                style={{marginLeft: 10}}>
+                <Icon name="grid" color={view?COLOR.black:COLOR.secondary2d} size={20} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {                  
+                  sales_data.refetch();
+                }}
+                style={{marginLeft: 10}}>
+                <Icon name="refresh" color={COLOR.black} size={20} />
+              </TouchableOpacity>
             </View>
           </View>
+          <View style={{flexDirection:'column',alignItems:'center'}}>
           <Text>Sorted By {sorttype}</Text>
+         {sales_data.data && view ?(<Text>{ComputeCompoundDigitsData.length} Digits</Text>):null}
+          </View>
+
           <View>
             <Text style={{...styles.normaltextsize, color: COLOR.black}}>
               {sales_data.data && numberWithCommas(SumTotalValue)} Ks
@@ -190,22 +234,118 @@ const Report = ({navigation}) => {
           </View>
         </View>
         <View style={styles.divider} />
-        <ScrollView style={{padding: 10}}>
-          <View>
-            <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
-            <ScrollView>
-              {sales_data.data &&
-                ComputeCompoundDigitsData.map((item, index) => (
-                  <Cell
-                    key={index}
-                    data={[item.number, item.amount]}
+
+        <ScrollView style={{padding: 10}}> 
+          {view ? (
+            <View>
+              <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
+              <ScrollView>
+                {sales_data.data &&
+                  ComputeCompoundDigitsData.map((item, index) => (
+                    <Cell
+                      key={index}
+                      data={[item.number, item.amount]}
+                      index={index}
+                    />
+                  ))}
+                <View style={{...styles.divider, padding: 5}} />
+              </ScrollView>
+            </View>
+          ) : (
+            <View>
+              {USalesData.reverse().map((item, index) => (
+                <View key={index}>
+                  <UserItem
+                    item_data={item}
                     index={index}
+                    setDetailData={setDetailData}
+                    onDetailShow ={onDetailShow}
                   />
-                ))}
-            </ScrollView>
-          </View>
+                </View>
+              ))}
+              <View style={styles.divider} />
+            </View>
+          )}
         </ScrollView>
-      </ScrollView>
+      </View>
+    </>
+  );
+};
+
+const UserItem = ({item_data, index, setDetailData,onDetailShow}) => {
+  let data = item_data;
+
+  console.log(item_data);
+  let date = new Date(data.datetime);
+
+  return (
+    <TouchableOpacity
+      style={{
+        backgroundColor: index % 2 === 1 ? COLOR.primary2d : COLOR.secondary2d,
+        margin: 5,
+        padding: 10,
+        borderRadius: 15,
+        flexDirection: 'column',
+      }}
+      onPress={() => {
+        setDetailData(data);
+     onDetailShow();
+      }}>
+      <Text style={{...styles.normalboldsize, fontSize: 25}}>
+        {data.customername}
+      </Text>
+
+      {data.phoneno && <Text>{data.phoneno}</Text>}
+      <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
+      <Text style={{color: COLOR.black, fontSize: 18}}>
+        {numberWithCommas(data.totalprice) + ' Ks'}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+const UserDetail = ({show, data,onClose}) => {
+  return (
+    <>
+   
+      {data ? (
+        <MessageModalNormal show={show} width={'100%'} height={'100%'} onClose={onClose}>
+          <Text style={{...styles.normalboldsize}}>Details</Text>
+          <View style={{flex:1,marginTop:10}}>
+            <Text style={{...styles.normalboldsize}}>
+            Name : {data.customername}
+            </Text>
+            {data.phoneno && 
+              <Text style={{...styles.normalboldsize}}>
+             {data.phoneno}
+            </Text>}
+            
+            <Text style={{...styles.normalboldsize}}>
+              Total Amount : {numberWithCommas(data.totalprice)} Ks
+            </Text>
+
+             <ScrollView style={{padding: 10}}>
+         
+            <View>
+              <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
+              <ScrollView>
+                {data.two_sales_digits.map((item, index) => (
+                    <Cell
+                      key={index}
+                      data={[item.number, item.amount]}
+                      index={index}
+                    />
+                  ))}
+              </ScrollView>
+            </View>
+         </ScrollView>
+         <TouchableOpacity style={{...styles.button,backgroundColor:COLOR.redColor}} onPress={()=>onClose()}>
+           <Text style={{...styles.normalboldsize,color:'white'}}>ပိတ်မည်</Text>
+         </TouchableOpacity>
+            
+          </View>
+        </MessageModalNormal>
+      ) : null}
     </>
   );
 };
@@ -220,6 +360,7 @@ const HeadingCell = ({data}) => {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: COLOR.primary2d,
+       
       }}>
       <Text
         style={{
@@ -269,7 +410,7 @@ const Cell = ({data, index}) => {
           ...styles.cell,
           padding: 5,
         }}>
-        {data[1]}
+        {numberWithCommas(data[1])}
       </Text>
     </View>
   );
