@@ -66,7 +66,6 @@ const HistoryReport = ({navigation}) => {
 
   return (
     <>
-      <UserDetail show={detailshow} data={detailData} onClose={onDetailShow} />
       <MessageModalNormal show={is_uploading} width={'20%'}>
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
@@ -205,7 +204,9 @@ const HistoryReport = ({navigation}) => {
         <View style={{padding: 10}}>
           <TouchableOpacity
             style={{...styles.button, backgroundColor: COLOR.primary2d}}
-            onPress={() => navigation.navigate('luckyreport')}>
+            onPress={() =>
+              navigation.navigate('luckyreport', {date: date.toLocaleString()})
+            }>
             <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
               ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
             </Text>
@@ -226,150 +227,4 @@ const HistoryReport = ({navigation}) => {
     </>
   );
 };
-
-const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
-  let data = item_data;
-
-  console.log(item_data);
-  let date = new Date(data.datetime);
-
-  return (
-    <TouchableOpacity
-      style={{
-        backgroundColor: index % 2 === 1 ? COLOR.primary2d : COLOR.secondary2d,
-        margin: 5,
-        padding: 10,
-        borderRadius: 15,
-        flexDirection: 'column',
-      }}
-      onPress={() => {
-        setDetailData(data);
-        onDetailShow();
-      }}>
-      <Text style={{...styles.normalboldsize, fontSize: 25}}>
-        {data.customername}
-      </Text>
-
-      {data.phoneno && <Text>{data.phoneno}</Text>}
-      <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
-      <Text style={{color: COLOR.black, fontSize: 18}}>
-        {numberWithCommas(data.totalprice) + ' Ks'}
-      </Text>
-    </TouchableOpacity>
-  );
-};
-
-const UserDetail = ({show, data, onClose}) => {
-  return (
-    <>
-      {data ? (
-        <MessageModalNormal
-          show={show}
-          width={'100%'}
-          height={'100%'}
-          onClose={onClose}>
-          <Text style={{...styles.normalboldsize}}>Details</Text>
-          <View style={{flex: 1, marginTop: 10}}>
-            <Text style={{...styles.normalboldsize}}>
-              Name : {data.customername}
-            </Text>
-            {data.phoneno && (
-              <Text style={{...styles.normalboldsize}}>{data.phoneno}</Text>
-            )}
-
-            <Text style={{...styles.normalboldsize}}>
-              Total Amount : {numberWithCommas(data.totalprice)} Ks
-            </Text>
-
-            <ScrollView style={{padding: 10}}>
-              <View>
-                <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
-                <ScrollView>
-                  {data.two_sales_digits.map((item, index) => (
-                    <Cell
-                      key={index}
-                      data={[item.number, item.amount]}
-                      index={index}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            </ScrollView>
-            <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.redColor}}
-              onPress={() => onClose()}>
-              <Text style={{...styles.normalboldsize, color: 'white'}}>
-                ပိတ်မည်
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </MessageModalNormal>
-      ) : null}
-    </>
-  );
-};
-
 export default HistoryReport;
-
-const HeadingCell = ({data}) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: COLOR.primary2d,
-      }}>
-      <Text
-        style={{
-          ...styles.normalboldsize,
-          width: '30%',
-          textAlign: 'center',
-          ...styles.cell,
-        }}>
-        {data[0]}
-      </Text>
-      <Text
-        style={{
-          ...styles.normalboldsize,
-          flex: 1,
-          textAlign: 'center',
-          ...styles.cell,
-        }}>
-        {data[1]}
-      </Text>
-    </View>
-  );
-};
-
-const Cell = ({data, index}) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: index % 2 === 1 ? COLOR.secondary2d : COLOR.white,
-      }}>
-      <Text
-        style={{
-          ...styles.normalboldsize,
-          width: '30%',
-          textAlign: 'center',
-          ...styles.cell,
-        }}>
-        {data[0]}
-      </Text>
-      <Text
-        style={{
-          ...styles.normalboldsize,
-          flex: 1,
-          textAlign: 'right',
-          ...styles.cell,
-          padding: 5,
-        }}>
-        {numberWithCommas(data[1])}
-      </Text>
-    </View>
-  );
-};

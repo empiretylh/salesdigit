@@ -12,12 +12,19 @@ class Database {
     return axios.post('/auth/salesdigit/register/', data);
   }
 
-  finish2d(data){
-    return axios.post('/sd/api/finishtwodigit/',data);
+  finish2d(data) {
+    return axios.post('/sd/api/finishtwodigit/', data);
   }
 
-    getfinish2d(data){
-    return axios.get('/sd/api/finishtwodigit/');
+  getfinish2d({queryKey}) {
+    const [_, date] = queryKey;
+    console.log(date);
+
+    return axios.get('/sd/api/finishtwodigit/', {
+      params: {
+        datetime: date,
+      },
+    });
   }
 
   sales2d(data) {
