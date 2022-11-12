@@ -28,6 +28,9 @@ class Database {
     return axios.get('/sd/api/salestwodigit/');
   }
 
+  getProfile(){
+    return axios.get('/api/profile/');
+  }
 
 }
 
