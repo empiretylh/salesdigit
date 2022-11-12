@@ -74,7 +74,7 @@ const HistoryReport = ({navigation}) => {
   const luckynumberref = useRef();
 
   const report = useQuery(
-    ['lucky-report', date.toUTCString()],
+    ['lucky-report', date.toDateString()],
     data.getfinish2d,
   );
 
@@ -189,7 +189,7 @@ const HistoryReport = ({navigation}) => {
             <TextInput
               style={{...styles.textinput, padding: 0, margin: 0, flex: 1}}
               placeholder={'Search with Name or Digit'}
-              value={date.toLocaleString()}
+              value={date.toDateString()}
             />
             <Icon
               name="calendar-outline"
@@ -200,6 +200,7 @@ const HistoryReport = ({navigation}) => {
             <DatePicker
               modal
               open={open}
+              mode={'date'}
               date={date}
               onConfirm={date => {
                 setOpen(false);
@@ -236,7 +237,7 @@ const HistoryReport = ({navigation}) => {
               style={{...styles.button, backgroundColor: COLOR.primary2d}}
               onPress={() =>
                 navigation.navigate('luckyreport', {
-                  date: new Date().toUTCString(),
+                  date: new Date().toDateString(),
                 })
               }>
               <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>

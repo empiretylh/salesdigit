@@ -60,6 +60,8 @@ const Home = ({navigation}) => {
       setDigitsData([{digits: '', amount: 0}]);
       cfieldref.current.clear();
       pfieldref.current.clear();
+      customer_field.current == '';
+      phoneno_field.current == '';
     },
     onMutate: () => {
       setIsUploading(true);
@@ -109,7 +111,8 @@ const Home = ({navigation}) => {
           Successfully Created Data
         </Text>
         <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.primary2d}} onPress={()=>navigation.navigate('2dreport')}>
+          style={{...styles.button, backgroundColor: COLOR.primary2d}}
+          onPress={() => navigation.navigate('2dreport')}>
           <Text style={{color: COLOR.black}}>Show Data</Text>
         </TouchableOpacity>
         <TouchableOpacity
