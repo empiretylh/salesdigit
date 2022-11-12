@@ -34,20 +34,29 @@ const HistoryReport = ({navigation}) => {
 
   const [is_uploading, setIsUploading] = useState(false);
 
+  const sales_data = useQuery(['sales2dreport'], data.getsold2d);
+
   const postdata = useMutation(data.finish2d, {
     onSuccess: () => {
       setIsUploading(false);
       setShowAlert(false);
+      luckynumberref.current.clear();
+      report.refetch()
+      setDate(new Date());
     },
     onMutate: () => {
       setIsUploading(true);
     },
     onError: () => {
       setShowAlert(false);
+      luckynumberref.current.clear();
+      setDate(new Date());
     },
   });
 
   const [showSort, setShowSort] = useState(false);
+
+ 
 
   const onCloseSort = () => {
     setShowSort(false);
@@ -64,13 +73,24 @@ const HistoryReport = ({navigation}) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
+  const luckynumberref = useRef();
+
+
+  const report = useQuery(['lucky-report', date.toUTCString()], data.getfinish2d);
+
+  report.data && console.log(report.data.data)
+
+
+  
+
+
   return (
     <>
       <MessageModalNormal show={is_uploading} width={'20%'}>
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
-      <MessageModalNormal show={showAlert} width={'98%'}>
+      <MessageModalNormal show={showAlert} width={'98%'} onClose={()=>setShowAlert(false)}>
         <Text style={{...styles.normalboldsize}}>
           ပေါက်ဂဏန်းသည် {luckynumber} ဖြစ်သည်မှာ သေချာပါသလား?
         </Text>
@@ -82,11 +102,19 @@ const HistoryReport = ({navigation}) => {
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.green}}
           onPress={() => {
-            postdata.mutate({
-              luckynumber,
-              enddate: date,
-            });
-            setShowAlert(false);
+            if (sales_data.data) {
+              if (sales_data.data.data.length >= 1) {
+                postdata.mutate({
+                  luckynumber,
+                  enddate: date,
+                });
+                setShowAlert(false);
+              }else{
+                alert('Error')
+              }
+            }else{
+              alert('Erorr')
+            }
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
             သေချာပါသည်။
@@ -131,9 +159,11 @@ const HistoryReport = ({navigation}) => {
             <TextInput
               style={{...styles.textinput, padding: 0, margin: 0, flex: 1}}
               placeholder={'ပေါက်ဂဏန်းထည့်ရန်'}
+              value={luckynumber}
               onChangeText={e => setLuckyNumber(e)}
               keyboardType={'number-pad'}
               maxLength={2}
+              ref={luckynumberref}
             />
             <Icon
               name={
@@ -202,15 +232,16 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
+        {report.data && report.data.data !==0 ? 
           <TouchableOpacity
             style={{...styles.button, backgroundColor: COLOR.primary2d}}
             onPress={() =>
-              navigation.navigate('luckyreport', {date: date.toLocaleString()})
+              navigation.navigate('luckyreport', {date: date.toUTCString()})
             }>
             <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
               ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity>:null}
 
           <TouchableOpacity
             style={{

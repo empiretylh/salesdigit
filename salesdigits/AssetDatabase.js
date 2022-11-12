@@ -84,7 +84,7 @@ export const STYLE = StyleSheet.create({
 export const IMAGE = {
   loadgif: require('./assets/spinnerloading.gif'),
   twodicon: require('./assets/twod.png'),
-  threeicon: require('./assets/threed.png')
+  threedicon: require('./assets/threed.png')
 };
 
 export const baseURL = 'http://192.168.43.247:8000';

@@ -19,7 +19,7 @@ const CustomDrawer = props => {
 		<View style={{flex: 1}}>
 			<View
 				style={{
-					paddingTop: 10,
+					paddingTop: 30,
 					paddingBottom: 10,
 					paddingLeft: 10,
 					paddingRight: 5,
