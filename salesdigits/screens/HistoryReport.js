@@ -41,7 +41,7 @@ const HistoryReport = ({navigation}) => {
       setIsUploading(false);
       setShowAlert(false);
       luckynumberref.current.clear();
-      report.refetch()
+      report.refetch();
       setDate(new Date());
     },
     onMutate: () => {
@@ -55,8 +55,6 @@ const HistoryReport = ({navigation}) => {
   });
 
   const [showSort, setShowSort] = useState(false);
-
- 
 
   const onCloseSort = () => {
     setShowSort(false);
@@ -75,14 +73,12 @@ const HistoryReport = ({navigation}) => {
 
   const luckynumberref = useRef();
 
+  const report = useQuery(
+    ['lucky-report', date.toUTCString()],
+    data.getfinish2d,
+  );
 
-  const report = useQuery(['lucky-report', date.toUTCString()], data.getfinish2d);
-
-  report.data && console.log(report.data.data)
-
-
-  
-
+  report.data && console.log(report.data.data);
 
   return (
     <>
@@ -90,7 +86,10 @@ const HistoryReport = ({navigation}) => {
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
-      <MessageModalNormal show={showAlert} width={'98%'} onClose={()=>setShowAlert(false)}>
+      <MessageModalNormal
+        show={showAlert}
+        width={'98%'}
+        onClose={() => setShowAlert(false)}>
         <Text style={{...styles.normalboldsize}}>
           ပေါက်ဂဏန်းသည် {luckynumber} ဖြစ်သည်မှာ သေချာပါသလား?
         </Text>
@@ -109,11 +108,11 @@ const HistoryReport = ({navigation}) => {
                   enddate: date,
                 });
                 setShowAlert(false);
-              }else{
-                alert('Error')
+              } else {
+                alert('Error');
               }
-            }else{
-              alert('Erorr')
+            } else {
+              alert('Erorr');
             }
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
@@ -232,16 +231,19 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
-        {report.data && report.data.data !==0 ? 
-          <TouchableOpacity
-            style={{...styles.button, backgroundColor: COLOR.primary2d}}
-            onPress={() =>
-              navigation.navigate('luckyreport', {date: date.toUTCString()})
-            }>
-            <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-              ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
-            </Text>
-          </TouchableOpacity>:null}
+          {report.data && report.data.data !== 0 ? (
+            <TouchableOpacity
+              style={{...styles.button, backgroundColor: COLOR.primary2d}}
+              onPress={() =>
+                navigation.navigate('luckyreport', {
+                  date: new Date().toUTCString(),
+                })
+              }>
+              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
+                ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
+              </Text>
+            </TouchableOpacity>
+          ) : null}
 
           <TouchableOpacity
             style={{

@@ -43,8 +43,6 @@ const LuckyReport = ({navigation, route}) => {
           }
         });
 
-        item.two_sales_digits = clone;
-
         return (
           final &&
           item.customername.toLowerCase().includes(searchtext.toLowerCase())
@@ -58,30 +56,24 @@ const LuckyReport = ({navigation, route}) => {
     if (report.data) {
       const data = report.data.data.filter((item, index) => {
         var luckynumber = item.luckyNumber_two;
-
         var final;
-
-        var two = item.two_sales_digits.map((item, index) => {
+        var clone = item.two_sales_digits.map((item, index) => {
           // console.log(item.number, luckynumber);
           var number = item.number;
-
-          if (
-            luckynumber.includes(number[0]) &&
-            luckynumber.includes(number[1])
-          ) {
-            // console.log('True')
+          if (luckynumber === number[1] + number[0]) {
+            console.log('true');
             final = 1;
           } else {
-            // console.log('False')
             if (final === 0) {
               final = 0;
             }
           }
         });
 
-        item.two_sales_digits = two;
-
-        return final;
+        return (
+          final &&
+          item.customername.toLowerCase().includes(searchtext.toLowerCase())
+        );
       });
       return data;
     }
@@ -95,9 +87,16 @@ const LuckyReport = ({navigation, route}) => {
     setDetailshow(prev => !prev);
   };
 
+  const [round, setRound] = useState(false);
+
   return (
     <View style={{flex: 1}}>
-      <UserDetail show={detailshow} data={detailData} onClose={onDetailShow} />
+      <UserDetail
+        show={detailshow}
+        data={detailData}
+        onClose={onDetailShow}
+        round={round}
+      />
       <View
         style={{
           backgroundColor: COLOR.primary2d,
@@ -140,6 +139,8 @@ const LuckyReport = ({navigation, route}) => {
                 index={index}
                 setDetailData={setDetailData}
                 onDetailShow={onDetailShow}
+                round={false}
+                setRound={setRound}
               />
             ))}
             <View style={styles.divider} />
@@ -154,6 +155,8 @@ const LuckyReport = ({navigation, route}) => {
                 index={index}
                 setDetailData={setDetailData}
                 onDetailShow={onDetailShow}
+                round={true}
+                setRound={setRound}
               />
             ))}
           </View>
@@ -163,7 +166,14 @@ const LuckyReport = ({navigation, route}) => {
   );
 };
 
-const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
+const UserItem = ({
+  item_data,
+  index,
+  setDetailData,
+  onDetailShow,
+  round,
+  setRound,
+}) => {
   let data = item_data;
 
   let date = new Date(data.datetime);
@@ -180,6 +190,7 @@ const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
       onPress={() => {
         setDetailData(data);
         onDetailShow();
+        setRound(round);
       }}>
       <Text style={{...styles.normalboldsize, fontSize: 25}}>
         {data.customername}
@@ -188,11 +199,19 @@ const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
       {data.phoneno && <Text>{data.phoneno}</Text>}
       <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
       <Text style={{color: COLOR.redColor, fontSize: 18, fontWeigth: 'bold'}}>
-        {numberWithCommas(SumValue(data.two_sales_digits))}
+        {numberWithCommas(
+          SumValue(LuckyDigitsFilter(data.two_sales_digits, '25', round)),
+        )}
         Ks
       </Text>
     </TouchableOpacity>
   );
+};
+
+const LuckyDigitsFilter = (data, luckynumber, round) => {
+  return !round
+    ? data.filter(item => item.number === luckynumber)
+    : data.filter(item => luckynumber === item.number[1] + item.number[0]);
 };
 
 const SumValue = data => {
@@ -203,7 +222,7 @@ const SumValue = data => {
   return value;
 };
 
-const UserDetail = ({show, data, onClose}) => {
+const UserDetail = ({show, data, onClose, round}) => {
   return (
     <>
       {data ? (
@@ -225,8 +244,10 @@ const UserDetail = ({show, data, onClose}) => {
               Total Amount :{' '}
               {numberWithCommas(
                 SumValue(
-                  data.two_sales_digits.filter(
-                    (item, index) => item.number === data.luckyNumber_two,
+                  LuckyDigitsFilter(
+                    data.two_sales_digits,
+                    data.luckyNumber_two,
+                    round,
                   ),
                 ),
               )}
@@ -236,17 +257,17 @@ const UserDetail = ({show, data, onClose}) => {
               <View>
                 <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
                 <ScrollView>
-                  {data.two_sales_digits
-                    .filter(
-                      (item, index) => item.number === data.luckyNumber_two,
-                    )
-                    .map((item, index) => (
-                      <Cell
-                        key={index}
-                        data={[item.number, item.amount]}
-                        index={index}
-                      />
-                    ))}
+                  {LuckyDigitsFilter(
+                    data.two_sales_digits,
+                    data.luckyNumber_two,
+                    round,
+                  ).map((item, index) => (
+                    <Cell
+                      key={index}
+                      data={[item.number, item.amount]}
+                      index={index}
+                    />
+                  ))}
                 </ScrollView>
               </View>
             </ScrollView>
