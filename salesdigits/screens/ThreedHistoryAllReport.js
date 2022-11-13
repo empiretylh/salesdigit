@@ -40,7 +40,7 @@ const HistoryAllReport = ({navigation}) => {
 
   const luckynumberref = useRef();
 
-  const report = useQuery(['history-report'], data.getHistory3d);
+  const report = useQuery(['3dhistory-report'], data.getHistory3d);
 
   report.data && console.log(report.data.data);
 

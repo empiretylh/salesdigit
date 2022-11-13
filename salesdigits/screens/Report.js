@@ -13,14 +13,19 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import {COLOR, numberWithCommas, STYLE as styles} from '../AssetDatabase';
+import {
+  COLOR,
+  isArryHasData,
+  numberWithCommas,
+  STYLE as styles,
+} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DigitsField from '../components/digitsfield';
 import {TwoDigitsContext} from '../context/Context';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
-const Report = ({navigation,}) => {
+const Report = ({navigation}) => {
   const [searchtext, setSearchText] = useState('');
 
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
@@ -122,9 +127,11 @@ const Report = ({navigation,}) => {
     setShowSort(false);
   };
 
-  const [detailshow,setDetailshow] = useState(false)
+  const [detailshow, setDetailshow] = useState(false);
 
-  const onDetailShow = ()=>{setDetailshow(prev=>!prev)}
+  const onDetailShow = () => {
+    setDetailshow(prev => !prev);
+  };
 
   return (
     <>
@@ -167,18 +174,39 @@ const Report = ({navigation,}) => {
       </MessageModalNormal>
 
       <View style={{flex: 1}}>
-         <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
-        <Text
+      <View
           style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-            letterSpacing: 1,
-            marginLeft:10
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}>
-          2D Report
-        </Text>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+            <Icon
+              name="menu"
+              size={30}
+              color={COLOR.black}
+              style={{paddingTop: 5}}
+              onPress={() => navigation.openDrawer()}
+            />
+            <Text
+              style={{
+                color: COLOR.black,
+                fontWeight: 'bold',
+                fontSize: 20,
+
+                marginLeft: 10,
+              }}>
+              2D Report
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{padding: 5}}
+            onPress={() =>
+              navigation.navigate('2dhistoryreport')
+            }>
+            <Icon name="save" size={25} color={COLOR.black} />
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -215,10 +243,14 @@ const Report = ({navigation,}) => {
                   setView(prev => !prev);
                 }}
                 style={{marginLeft: 10}}>
-                <Icon name="grid" color={view?COLOR.black:COLOR.secondary2d} size={20} />
+                <Icon
+                  name="grid"
+                  color={view ? COLOR.black : COLOR.secondary2d}
+                  size={20}
+                />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {                  
+                onPress={() => {
                   sales_data.refetch();
                 }}
                 style={{marginLeft: 10}}>
@@ -226,9 +258,11 @@ const Report = ({navigation,}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{flexDirection:'column',alignItems:'center'}}>
-          <Text>Sorted By {sorttype}</Text>
-         {sales_data.data && view ?(<Text>{ComputeCompoundDigitsData.length} Digits</Text>):null}
+          <View style={{flexDirection: 'column', alignItems: 'center'}}>
+            <Text>Sorted By {sorttype}</Text>
+            {sales_data.data && view ? (
+              <Text>{ComputeCompoundDigitsData.length} Digits</Text>
+            ) : null}
           </View>
 
           <View>
@@ -238,45 +272,78 @@ const Report = ({navigation,}) => {
           </View>
         </View>
         <View style={styles.divider} />
-
-        <ScrollView style={{padding: 10}}> 
-          {view ? (
-            <View>
-              <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
-              <ScrollView>
-                {sales_data.data &&
-                  ComputeCompoundDigitsData.map((item, index) => (
-                    <Cell
-                      key={index}
-                      data={[item.number, item.amount]}
-                      index={index}
-                    />
-                  ))}
-                <View style={{...styles.divider, padding: 5}} />
-              </ScrollView>
-            </View>
-          ) : (
-            <View>
-              {USalesData.reverse().map((item, index) => (
-                <View key={index}>
-                  <UserItem
-                    item_data={item}
-                    index={index}
-                    setDetailData={setDetailData}
-                    onDetailShow ={onDetailShow}
-                  />
-                </View>
-              ))}
-              <View style={styles.divider} />
-            </View>
-          )}
-        </ScrollView>
+        {sales_data.isLoading || sales_data.isFetching ? (
+          <ActivityIndicator size={'large'} color={COLOR.secondary2d} />
+        ) : (
+          <ScrollView style={{padding: 10}}>
+            {view ? (
+              <View>
+                <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
+                <ScrollView>
+                  {sales_data.data &&
+                  isArryHasData(ComputeCompoundDigitsData) ? (
+                    ComputeCompoundDigitsData.map((item, index) => (
+                      <Cell
+                        key={index}
+                        data={[item.number, item.amount]}
+                        index={index}
+                      />
+                    ))
+                  ) : (
+                    <View
+                      style={{
+                        flex: 1,
+                        padding: 20,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{...styles.normalboldsize, color: COLOR.black}}>
+                        ဒေတာများ မရှိသေးပါ။
+                      </Text>
+                    </View>
+                  )}
+                  <View style={{...styles.divider, padding: 5}} />
+                </ScrollView>
+              </View>
+            ) : (
+              <View>
+                {isArryHasData(USalesData) ? (
+                  USalesData.reverse().map((item, index) => (
+                    <View key={index}>
+                      <UserItem
+                        item_data={item}
+                        index={index}
+                        setDetailData={setDetailData}
+                        onDetailShow={onDetailShow}
+                      />
+                    </View>
+                  ))
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      padding: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{...styles.normalboldsize, color: COLOR.black}}>
+                      ဒေတာများ မရှိသေးပါ။
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.divider} />
+              </View>
+            )}
+          </ScrollView>
+        )}
       </View>
     </>
   );
 };
 
-const UserItem = ({item_data, index, setDetailData,onDetailShow}) => {
+const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
   let data = item_data;
 
   console.log(item_data);
@@ -293,7 +360,7 @@ const UserItem = ({item_data, index, setDetailData,onDetailShow}) => {
       }}
       onPress={() => {
         setDetailData(data);
-     onDetailShow();
+        onDetailShow();
       }}>
       <Text style={{...styles.normalboldsize, fontSize: 25}}>
         {data.customername}
@@ -308,45 +375,50 @@ const UserItem = ({item_data, index, setDetailData,onDetailShow}) => {
   );
 };
 
-const UserDetail = ({show, data,onClose}) => {
+const UserDetail = ({show, data, onClose}) => {
   return (
     <>
-   
       {data ? (
-        <MessageModalNormal show={show} width={'100%'} height={'100%'} onClose={onClose}>
+        <MessageModalNormal
+          show={show}
+          width={'100%'}
+          height={'100%'}
+          onClose={onClose}>
           <Text style={{...styles.normalboldsize}}>Details</Text>
-          <View style={{flex:1,marginTop:10}}>
+          <View style={{flex: 1, marginTop: 10}}>
             <Text style={{...styles.normalboldsize}}>
-            Name : {data.customername}
+              Name : {data.customername}
             </Text>
-            {data.phoneno && 
-              <Text style={{...styles.normalboldsize}}>
-             {data.phoneno}
-            </Text>}
-            
+            {data.phoneno && (
+              <Text style={{...styles.normalboldsize}}>{data.phoneno}</Text>
+            )}
+
             <Text style={{...styles.normalboldsize}}>
               Total Amount : {numberWithCommas(data.totalprice)} Ks
             </Text>
 
-             <ScrollView style={{padding: 10}}>
-         
-            <View>
-              <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
-              <ScrollView>
-                {data.two_sales_digits && data.two_sales_digits.map((item, index) => (
-                    <Cell
-                      key={index}
-                      data={[item.number, item.amount]}
-                      index={index}
-                    />
-                  ))}
-              </ScrollView>
-            </View>
-         </ScrollView>
-         <TouchableOpacity style={{...styles.button,backgroundColor:COLOR.redColor}} onPress={()=>onClose()}>
-           <Text style={{...styles.normalboldsize,color:'white'}}>ပိတ်မည်</Text>
-         </TouchableOpacity>
-            
+            <ScrollView style={{padding: 10}}>
+              <View>
+                <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
+                <ScrollView>
+                  {data.two_sales_digits &&
+                    data.two_sales_digits.map((item, index) => (
+                      <Cell
+                        key={index}
+                        data={[item.number, item.amount]}
+                        index={index}
+                      />
+                    ))}
+                </ScrollView>
+              </View>
+            </ScrollView>
+            <TouchableOpacity
+              style={{...styles.button, backgroundColor: COLOR.redColor}}
+              onPress={() => onClose()}>
+              <Text style={{...styles.normalboldsize, color: 'white'}}>
+                ပိတ်မည်
+              </Text>
+            </TouchableOpacity>
           </View>
         </MessageModalNormal>
       ) : null}
@@ -364,7 +436,6 @@ const HeadingCell = ({data}) => {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: COLOR.primary2d,
-       
       }}>
       <Text
         style={{

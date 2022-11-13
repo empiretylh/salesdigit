@@ -19,8 +19,18 @@ const Drawer = createDrawerNavigator();
 export default function MyDrawer() {
   return (
     <Drawer.Navigator
-      screenOptions={{headerShown: false}}
-      drawerContent={props => <CustomSideBar {...props} />}>
+    drawerContent={props => <CustomSideBar {...props} />} 
+    screenOptions={{headerShown: false,
+    drawerActiveBackgroundColor:'#fc5e03',
+    drawerActiveTintColor:'#fff',
+    drawerInactiveTintColor:'#333',
+    drawerLabelStyle:{
+      marginLeft:-25,
+      fontSize:15,
+    }
+  }}
+    
+      >
       <Drawer.Screen
         name="stwod"
         component={Home}
@@ -37,7 +47,7 @@ export default function MyDrawer() {
         options={{
           title: '2D Report',
           drawerIcon: ({color}) => (
-            <Icon name={'document'} size={30} color={COLOR.primary2d}/>
+            <Icon name={'document-outline'} size={30} color={COLOR.primary2d}/>
         
           ),
         }}
@@ -48,7 +58,7 @@ export default function MyDrawer() {
         options={() => ({
           title: 'Save 2D Report',
            drawerIcon: ({color}) => (
-            <Icon name={'timer'} size={30} color={COLOR.primary2d}/>
+            <Icon name={'timer-outline'} size={30} color={COLOR.primary2d}/>
           ),
         })}
       />
@@ -68,7 +78,7 @@ export default function MyDrawer() {
         options={{
           title: '3D Report',
           drawerIcon: ({color}) => (
-            <Icon name={'document'} size={30} color={COLOR.primary3d}/>
+            <Icon name={'document-outline'} size={30} color={COLOR.primary3d}/>
         
           ),
         }}
@@ -79,7 +89,7 @@ export default function MyDrawer() {
         options={() => ({
           title: 'Save 3D Report',
            drawerIcon: ({color}) => (
-            <Icon name={'timer'} size={30} color={COLOR.primary3d}/>
+            <Icon name={'timer-outline'} size={30} color={COLOR.primary3d}/>
           ),
         })}
       />

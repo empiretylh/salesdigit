@@ -60,12 +60,13 @@ const LuckyReport = ({navigation, route}) => {
         var clone = item.three_sales_digits.map((item, index) => {
           // console.log(item.number, luckynumber);
           var number = item.number;
-          if (luckynumber === number[0] + number[2] + number[1] || 
-            luckynumber === number[1] + number[0] + number[2] || 
+          if (
+            luckynumber === number[0] + number[2] + number[1] ||
+            luckynumber === number[1] + number[0] + number[2] ||
             luckynumber === number[1] + number[2] + number[0] ||
             luckynumber === number[2] + number[0] + number[1] ||
             luckynumber === number[2] + number[1] + number[0]
-            ) {
+          ) {
             console.log('true');
             final = 1;
           } else {
@@ -88,8 +89,6 @@ const LuckyReport = ({navigation, route}) => {
 
   const [detailshow, setDetailshow] = useState(false);
 
-  
-
   const onDetailShow = () => {
     setDetailshow(prev => !prev);
   };
@@ -111,8 +110,14 @@ const LuckyReport = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-          <Icon name='arrow-back' size={30} color={COLOR.white} style={{paddingTop:5,position:'absolute',left: 5}} onPress={()=> navigation.goBack()}/>
-      
+        <Icon
+          name="arrow-back"
+          size={30}
+          color={COLOR.white}
+          style={{paddingTop: 5, position: 'absolute', left: 5}}
+          onPress={() => navigation.goBack()}
+        />
+
         <Text style={{color: COLOR.white, fontSize: 40, fontWeight: 'bold'}}>
           {report.data && report.data.data[0].luckyNumber_three}
         </Text>
@@ -134,43 +139,49 @@ const LuckyReport = ({navigation, route}) => {
         />
         <Icon name="search" size={20} color={COLOR.black} />
       </View>
-      <ScrollView style={{flex: 1, padding: 10}}>
-        {report.data ? (
-          <View>
-            <Text
-              style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
-              ဂဏန်းပေါက်သူများ {LuckyData.length}
-            </Text>
-            <View style={styles.divider} />
-            {LuckyData.map((item, index) => (
-              <UserItem
-                item_data={item}
-                index={index}
-                setDetailData={setDetailData}
-                onDetailShow={onDetailShow}
-                round={false}
-                setRound={setRound}
-              />
-            ))}
-            <View style={styles.divider} />
-            <Text
-              style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
-              ဂဏန်း Round ရသူများ {LuckyRoundData.length}
-            </Text>
-            <View style={styles.divider} />
-            {LuckyRoundData.map((item, index) => (
-              <UserItem
-                item_data={item}
-                index={index}
-                setDetailData={setDetailData}
-                onDetailShow={onDetailShow}
-                round={true}
-                setRound={setRound}
-              />
-            ))}
-          </View>
-        ) : null}
-      </ScrollView>
+      {report.isFetching && report.isLoading ? (
+        <ActivityIndicator size={'large'} color={COLOR.primary3d} />
+      ) : (
+        <ScrollView style={{flex: 1, padding: 10}}>
+          {report.data ? (
+            <View>
+              <Text
+                style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
+                ဂဏန်းပေါက်သူများ {LuckyData.length}
+              </Text>
+              <View style={styles.divider} />
+              {LuckyData.map((item, index) => (
+                <UserItem
+                  item_data={item}
+                  index={index}
+                  setDetailData={setDetailData}
+                  onDetailShow={onDetailShow}
+                  round={false}
+                  setRound={setRound}
+                  key={index}
+                />
+              ))}
+              <View style={styles.divider} />
+              <Text
+                style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
+                ဂဏန်း Round ရသူများ {LuckyRoundData.length}
+              </Text>
+              <View style={styles.divider} />
+              {LuckyRoundData.map((item, index) => (
+                <UserItem
+                  item_data={item}
+                  index={index}
+                  setDetailData={setDetailData}
+                  onDetailShow={onDetailShow}
+                  round={true}
+                  setRound={setRound}
+                  key={index}
+                />
+              ))}
+            </View>
+          ) : null}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -201,15 +212,21 @@ const UserItem = ({
         onDetailShow();
         setRound(round);
       }}>
-      <Text style={{...styles.normalboldsize, fontSize: 25}}>
+      <Text style={{...styles.normalboldsize, fontSize: 25,color:COLOR.white}}>
         {data.customername}
       </Text>
 
       {data.phoneno && <Text>{data.phoneno}</Text>}
-      <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
+      <Text style={{color: COLOR.white}}>{date.toLocaleString()}</Text>
       <Text style={{color: COLOR.redColor, fontSize: 18, fontWeigth: 'bold'}}>
         {numberWithCommas(
-          SumValue(LuckyDigitsFilter(data.three_sales_digits, data.luckyNumber_three, round)),
+          SumValue(
+            LuckyDigitsFilter(
+              data.three_sales_digits,
+              data.luckyNumber_three,
+              round,
+            ),
+          ),
         )}
         Ks
       </Text>
@@ -220,11 +237,14 @@ const UserItem = ({
 const LuckyDigitsFilter = (data, luckynumber, round) => {
   return !round
     ? data.filter(item => item.number === luckynumber)
-    : data.filter(item => luckynumber === item.number[0] + item.number[2] + item.number[1] || 
-            luckynumber === item.number[1] + item.number[0] + item.number[2] || 
-            luckynumber === item.number[1] + item.number[2] + item.number[0] ||
-            luckynumber === item.number[2] + item.number[0] + item.number[1] ||
-            luckynumber === item.number[2] + item.number[1] + item.number[0]);
+    : data.filter(
+        item =>
+          luckynumber === item.number[0] + item.number[2] + item.number[1] ||
+          luckynumber === item.number[1] + item.number[0] + item.number[2] ||
+          luckynumber === item.number[1] + item.number[2] + item.number[0] ||
+          luckynumber === item.number[2] + item.number[0] + item.number[1] ||
+          luckynumber === item.number[2] + item.number[1] + item.number[0],
+      );
 };
 
 const SumValue = data => {
@@ -312,7 +332,7 @@ const HeadingCell = ({data}) => {
           ...styles.normalboldsize,
           width: '30%',
           textAlign: 'center',
-          color:COLOR.white,
+          color: COLOR.white,
           ...styles.cell,
         }}>
         {data[0]}
@@ -322,7 +342,7 @@ const HeadingCell = ({data}) => {
           ...styles.normalboldsize,
           flex: 1,
           textAlign: 'center',
-          color:COLOR.white,
+          color: COLOR.white,
           ...styles.cell,
         }}>
         {data[1]}
@@ -346,7 +366,7 @@ const Cell = ({data, index}) => {
           width: '30%',
           textAlign: 'center',
           ...styles.cell,
-          color:  index % 2 === 1 ? COLOR.white : COLOR.black,
+          color: index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {data[0]}
       </Text>
@@ -357,7 +377,7 @@ const Cell = ({data, index}) => {
           textAlign: 'right',
           ...styles.cell,
           padding: 5,
-          color:  index % 2 === 1 ? COLOR.white : COLOR.black,
+          color: index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {numberWithCommas(data[1])}
       </Text>

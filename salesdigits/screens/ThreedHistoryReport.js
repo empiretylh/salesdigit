@@ -75,7 +75,7 @@ const HistoryReport = ({navigation}) => {
   const luckynumberref = useRef();
 
   const report = useQuery(
-    ['lucky-report', date.toDateString()],
+    ['3d-lucky-report', date.toDateString()],
     data.getfinish3d,
   );
 

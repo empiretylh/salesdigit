@@ -171,18 +171,41 @@ const FinishedReport = ({navigation, route}) => {
       </MessageModalNormal>
 
       <View style={{flex: 1}}>
-              <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='arrow-back' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.goBack()}/>
-        <Text
+      <View
           style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-            
-            marginLeft:10
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}>
-           2D History Report
-        </Text>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+            <Icon
+              name="arrow-back"
+              size={30}
+              color={COLOR.black}
+              style={{paddingTop: 5}}
+              onPress={() => navigation.goBack()}
+            />
+            <Text
+              style={{
+                color: COLOR.black,
+                fontWeight: 'bold',
+                fontSize: 20,
+
+                marginLeft: 10,
+              }}>
+              2D History Report
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{padding: 5}}
+            onPress={() =>
+              navigation.navigate('2dluckyreport', {
+                date: date
+              })
+            }>
+            <Icon name="document" size={25} color={COLOR.black} />
+          </TouchableOpacity>
         </View>
         <View
           style={{

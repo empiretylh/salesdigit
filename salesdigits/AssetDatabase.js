@@ -72,23 +72,27 @@ export const STYLE = StyleSheet.create({
     height: 2,
     marginTop: 5,
     marginBottom: 5,
-  },  
-  cell:{
-    borderColor:'black',
-    borderWidth:1,
-    padding:5,
-    minHeight:20,
-  }
+  },
+  cell: {
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 5,
+    minHeight: 20,
+  },
 });
 
 export const IMAGE = {
   loadgif: require('./assets/spinnerloading.gif'),
   twodicon: require('./assets/twod.png'),
-  threedicon: require('./assets/threed.png')
+  threedicon: require('./assets/threed.png'),
 };
 
 export const baseURL = 'http://192.168.43.247:8000';
 
 export const numberWithCommas = (x = 0) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const isArryHasData = (arr = []) => {
+  return arr.length >= 1;
 };

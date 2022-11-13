@@ -83,8 +83,6 @@ const LuckyReport = ({navigation, route}) => {
 
   const [detailshow, setDetailshow] = useState(false);
 
-  
-
   const onDetailShow = () => {
     setDetailshow(prev => !prev);
   };
@@ -106,8 +104,14 @@ const LuckyReport = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-           <Icon name='arrow-back' size={30} color={COLOR.black} style={{paddingTop:5,position:'absolute',left: 5}} onPress={()=> navigation.goBack()}/>
-      
+        <Icon
+          name="arrow-back"
+          size={30}
+          color={COLOR.black}
+          style={{paddingTop: 5, position: 'absolute', left: 5}}
+          onPress={() => navigation.goBack()}
+        />
+
         <Text style={{color: 'black', fontSize: 40, fontWeight: 'bold'}}>
           {report.data && report.data.data[0].luckyNumber_two}
         </Text>
@@ -129,43 +133,49 @@ const LuckyReport = ({navigation, route}) => {
         />
         <Icon name="search" size={20} color={COLOR.black} />
       </View>
-      <ScrollView style={{flex: 1, padding: 10}}>
-        {report.data ? (
-          <View>
-            <Text
-              style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
-              ဂဏန်းပေါက်သူများ {LuckyData.length}
-            </Text>
-            <View style={styles.divider} />
-            {LuckyData.map((item, index) => (
-              <UserItem
-                item_data={item}
-                index={index}
-                setDetailData={setDetailData}
-                onDetailShow={onDetailShow}
-                round={false}
-                setRound={setRound}
-              />
-            ))}
-            <View style={styles.divider} />
-            <Text
-              style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
-              ဂဏန်း Round ရသူများ {LuckyRoundData.length}
-            </Text>
-            <View style={styles.divider} />
-            {LuckyRoundData.map((item, index) => (
-              <UserItem
-                item_data={item}
-                index={index}
-                setDetailData={setDetailData}
-                onDetailShow={onDetailShow}
-                round={true}
-                setRound={setRound}
-              />
-            ))}
-          </View>
-        ) : null}
-      </ScrollView>
+      {report.isFetching && report.isLoading ? (
+        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+      ) : (
+        <ScrollView style={{flex: 1, padding: 10}}>
+          {report.data ? (
+            <View>
+              <Text
+                style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
+                ဂဏန်းပေါက်သူများ {LuckyData.length}
+              </Text>
+              <View style={styles.divider} />
+              {LuckyData.map((item, index) => (
+                <UserItem
+                  item_data={item}
+                  index={index}
+                  setDetailData={setDetailData}
+                  onDetailShow={onDetailShow}
+                  round={false}
+                  setRound={setRound}
+                  key={index}
+                />
+              ))}
+              <View style={styles.divider} />
+              <Text
+                style={{color: COLOR.black, fontWeight: 'bold', fontSize: 18}}>
+                ဂဏန်း Round ရသူများ {LuckyRoundData.length}
+              </Text>
+              <View style={styles.divider} />
+              {LuckyRoundData.map((item, index) => (
+                <UserItem
+                  item_data={item}
+                  index={index}
+                  setDetailData={setDetailData}
+                  onDetailShow={onDetailShow}
+                  round={true}
+                  setRound={setRound}
+                  key={index}
+                />
+              ))}
+            </View>
+          ) : null}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -204,7 +214,13 @@ const UserItem = ({
       <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
       <Text style={{color: COLOR.redColor, fontSize: 18, fontWeigth: 'bold'}}>
         {numberWithCommas(
-          SumValue(LuckyDigitsFilter(data.two_sales_digits, data.luckyNumber_two, round)),
+          SumValue(
+            LuckyDigitsFilter(
+              data.two_sales_digits,
+              data.luckyNumber_two,
+              round,
+            ),
+          ),
         )}
         Ks
       </Text>
