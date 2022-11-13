@@ -3,6 +3,10 @@ import * as React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from './Home';
+import ThreedHome from './ThreedHome';
+import ThreedReport from './ThreedReport';
+import ThreedHistoryReport from './ThreedHistoryReport';
+
 import {View, Text, Image} from 'react-native';
 import Report from './Report';
 import HistoryReport from './HistoryReport';
@@ -50,7 +54,7 @@ export default function MyDrawer() {
       />
        <Drawer.Screen
         name="sthreed"
-        component={Home}
+        component={ThreedHome}
         options={() => ({
           title: 'Sales Digits 3D',
           drawerIcon: ({color}) => (
@@ -60,7 +64,7 @@ export default function MyDrawer() {
       />
       <Drawer.Screen
         name="3dreport"
-        component={Report}
+        component={ThreedReport}
         options={{
           title: '3D Report',
           drawerIcon: ({color}) => (
@@ -71,7 +75,7 @@ export default function MyDrawer() {
       />
       <Drawer.Screen
         name="3dhistoryreport"
-        component={HistoryReport}
+        component={ThreedHistoryReport}
         options={() => ({
           title: 'Save 3D Report',
            drawerIcon: ({color}) => (

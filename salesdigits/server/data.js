@@ -27,6 +27,12 @@ class Database {
     });
   }
 
+
+  getHistory2d() {
+  
+    return axios.get('/sd/api/historytwodigit/');
+  }
+
   sales2d(data) {
     return axios.post('/sd/api/salestwodigit/', data);
   }
@@ -34,6 +40,44 @@ class Database {
   getsold2d(data) {
     return axios.get('/sd/api/salestwodigit/');
   }
+
+
+ // 3D requests --------------------------------------------------------------------------------------
+
+
+
+  finish3d(data) {
+    return axios.post('/sd/api/finishthreedigit/', data);
+  }
+
+  getfinish3d({queryKey}) {
+    const [_, date] = queryKey;
+    console.log(date);
+
+    return axios.get('/sd/api/finishthreedigit/', {
+      params: {
+        datetime: date,
+      },
+    });
+  }
+
+
+  getHistory3d() {
+  
+    return axios.get('/sd/api/historythreedigit/');
+  }
+
+  sales3d(data) {
+    return axios.post('/sd/api/salesthreedigit/', data);
+  }
+
+  getsold3d(data) {
+    return axios.get('/sd/api/salesthreedigit/');
+  }
+
+
+
+
 
   getProfile(){
     return axios.get('/api/profile/');

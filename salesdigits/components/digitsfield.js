@@ -4,7 +4,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {COLOR, numberWithCommas, STYLE as s} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {TwoDigitsContext} from '../context/Context';
-const DigitsField = ({item, index}) => {
+const DigitsField = ({item, index, threed = false}) => {
   const [digits, setDigits] = useState(item.digits ? '' : item.digits);
   const [amount, setAmount] = useState(item.amount ? 0 : item.amount);
   const {digitsData, setDigitsData, newForm, DeleteDigits} =
@@ -37,11 +37,11 @@ const DigitsField = ({item, index}) => {
       <TextInput
         style={{...s.textinput, flex: 1}}
         keyboardType={'number-pad'}
-        placeholder={'00 - 99'}
-        maxLength={2}
+        placeholder={threed ? '000 - 999' : '00 - 99'}
+        maxLength={threed ? 3 : 2}
         onChangeText={e => {
           setDigits(e);
-          if (e.length >= 2) {
+          if (e.length >= (threed ? 3 : 2)) {
             amountfield.current.focus();
           }
         }}

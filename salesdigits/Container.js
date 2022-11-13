@@ -8,12 +8,20 @@ import SignUp from './auth/Signup';
 import Login from './auth/Login';
 import Main from './screens/main';
 import LuckyReport from './screens/LuckyReport';
+import HistoryAllReport from './screens/HistoryAllReport';
+import FinishedReport from './screens/finishreport';
+
+
+import ThreedLuckyReport from './screens/ThreedLuckyReport';
+import ThreedHistoryAllReport from './screens/ThreedHistoryAllReport';
+import ThreedfinsihReport from './screens/Threedfinishreport';
+
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import axios from 'axios';
 import LoadSplashScreen from './extra/LoadingSplashScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator();8
 const queryClient = new QueryClient();
 
 const Container = () => {
@@ -65,7 +73,13 @@ const Container = () => {
             ) : (
               <>
                 <Stack.Screen name="main" component={Main} />
-                <Stack.Screen name="luckyreport" component={LuckyReport} />
+                <Stack.Screen name="2dluckyreport" component={LuckyReport} />
+                <Stack.Screen name="2dhistoryallreport" component={HistoryAllReport} />
+                 <Stack.Screen name="2dfinishreport" component={FinishedReport} />
+
+                   <Stack.Screen name="3dluckyreport" component={ThreedLuckyReport} />
+                <Stack.Screen name="3dhistoryallreport" component={ThreedHistoryAllReport} />
+                 <Stack.Screen name="3dfinishreport" component={ThreedfinsihReport} />
               </>
             )}
           </Stack.Navigator>

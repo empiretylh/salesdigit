@@ -22,16 +22,16 @@ import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
 const LuckyReport = ({navigation, route}) => {
   const {date} = route.params;
-  const report = useQuery(['lucky-report', date], data.getfinish2d);
+  const report = useQuery(['3d-lucky-report', date], data.getfinish3d);
 
   const [searchtext, setSearchText] = useState('');
 
   const LuckyData = useMemo(() => {
     if (report.data) {
       const data = report.data.data.filter((item, index) => {
-        var luckynumber = item.luckyNumber_two;
+        var luckynumber = item.luckyNumber_three;
         var final;
-        var clone = item.two_sales_digits.map((item, index) => {
+        var clone = item.three_sales_digits.map((item, index) => {
           // console.log(item.number, luckynumber);
           if (item.number === luckynumber) {
             // console.log('true');
@@ -55,12 +55,17 @@ const LuckyReport = ({navigation, route}) => {
   const LuckyRoundData = useMemo(() => {
     if (report.data) {
       const data = report.data.data.filter((item, index) => {
-        var luckynumber = item.luckyNumber_two;
+        var luckynumber = item.luckyNumber_three;
         var final;
-        var clone = item.two_sales_digits.map((item, index) => {
+        var clone = item.three_sales_digits.map((item, index) => {
           // console.log(item.number, luckynumber);
           var number = item.number;
-          if (luckynumber === number[1] + number[0]) {
+          if (luckynumber === number[0] + number[2] + number[1] || 
+            luckynumber === number[1] + number[0] + number[2] || 
+            luckynumber === number[1] + number[2] + number[0] ||
+            luckynumber === number[2] + number[0] + number[1] ||
+            luckynumber === number[2] + number[1] + number[0]
+            ) {
             console.log('true');
             final = 1;
           } else {
@@ -101,15 +106,15 @@ const LuckyReport = ({navigation, route}) => {
       />
       <View
         style={{
-          backgroundColor: COLOR.primary2d,
+          backgroundColor: COLOR.primary3d,
           padding: 10,
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-           <Icon name='arrow-back' size={30} color={COLOR.black} style={{paddingTop:5,position:'absolute',left: 5}} onPress={()=> navigation.goBack()}/>
+          <Icon name='arrow-back' size={30} color={COLOR.white} style={{paddingTop:5,position:'absolute',left: 5}} onPress={()=> navigation.goBack()}/>
       
-        <Text style={{color: 'black', fontSize: 40, fontWeight: 'bold'}}>
-          {report.data && report.data.data[0].luckyNumber_two}
+        <Text style={{color: COLOR.white, fontSize: 40, fontWeight: 'bold'}}>
+          {report.data && report.data.data[0].luckyNumber_three}
         </Text>
         <Text
           style={{position: 'absolute', bottom: 5, right: 5, color: 'white'}}>
@@ -185,7 +190,7 @@ const UserItem = ({
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: index % 2 === 1 ? COLOR.primary2d : COLOR.secondary2d,
+        backgroundColor: index % 2 === 1 ? COLOR.primary3d : COLOR.secondary3d,
         margin: 5,
         padding: 10,
         borderRadius: 15,
@@ -204,7 +209,7 @@ const UserItem = ({
       <Text style={{color: 'black'}}>{date.toLocaleString()}</Text>
       <Text style={{color: COLOR.redColor, fontSize: 18, fontWeigth: 'bold'}}>
         {numberWithCommas(
-          SumValue(LuckyDigitsFilter(data.two_sales_digits, data.luckyNumber_two, round)),
+          SumValue(LuckyDigitsFilter(data.three_sales_digits, data.luckyNumber_three, round)),
         )}
         Ks
       </Text>
@@ -215,7 +220,11 @@ const UserItem = ({
 const LuckyDigitsFilter = (data, luckynumber, round) => {
   return !round
     ? data.filter(item => item.number === luckynumber)
-    : data.filter(item => luckynumber === item.number[1] + item.number[0]);
+    : data.filter(item => luckynumber === item.number[0] + item.number[2] + item.number[1] || 
+            luckynumber === item.number[1] + item.number[0] + item.number[2] || 
+            luckynumber === item.number[1] + item.number[2] + item.number[0] ||
+            luckynumber === item.number[2] + item.number[0] + item.number[1] ||
+            luckynumber === item.number[2] + item.number[1] + item.number[0]);
 };
 
 const SumValue = data => {
@@ -249,8 +258,8 @@ const UserDetail = ({show, data, onClose, round}) => {
               {numberWithCommas(
                 SumValue(
                   LuckyDigitsFilter(
-                    data.two_sales_digits,
-                    data.luckyNumber_two,
+                    data.three_sales_digits,
+                    data.luckyNumber_three,
                     round,
                   ),
                 ),
@@ -262,8 +271,8 @@ const UserDetail = ({show, data, onClose, round}) => {
                 <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
                 <ScrollView>
                   {LuckyDigitsFilter(
-                    data.two_sales_digits,
-                    data.luckyNumber_two,
+                    data.three_sales_digits,
+                    data.luckyNumber_three,
                     round,
                   ).map((item, index) => (
                     <Cell
@@ -296,13 +305,14 @@ const HeadingCell = ({data}) => {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLOR.primary2d,
+        backgroundColor: COLOR.primary3d,
       }}>
       <Text
         style={{
           ...styles.normalboldsize,
           width: '30%',
           textAlign: 'center',
+          color:COLOR.white,
           ...styles.cell,
         }}>
         {data[0]}
@@ -312,6 +322,7 @@ const HeadingCell = ({data}) => {
           ...styles.normalboldsize,
           flex: 1,
           textAlign: 'center',
+          color:COLOR.white,
           ...styles.cell,
         }}>
         {data[1]}
@@ -327,7 +338,7 @@ const Cell = ({data, index}) => {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: index % 2 === 1 ? COLOR.secondary2d : COLOR.white,
+        backgroundColor: index % 2 === 1 ? COLOR.secondary3d : COLOR.white,
       }}>
       <Text
         style={{
@@ -335,6 +346,7 @@ const Cell = ({data, index}) => {
           width: '30%',
           textAlign: 'center',
           ...styles.cell,
+          color:  index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {data[0]}
       </Text>
@@ -345,6 +357,7 @@ const Cell = ({data, index}) => {
           textAlign: 'right',
           ...styles.cell,
           padding: 5,
+          color:  index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {numberWithCommas(data[1])}
       </Text>

@@ -17,7 +17,7 @@ import {TwoDigitsContext} from '../context/Context';
 import {useMutation} from '@tanstack/react-query';
 import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
-const Home = ({navigation}) => {
+const ThreedHome = ({navigation}) => {
   const [showPF, setPF] = useState(false);
 
   const [digitsData, setDigitsData] = useState([{digits: '', amount: 0}]);
@@ -53,7 +53,7 @@ const Home = ({navigation}) => {
     [digitsData, setDigitsData],
   );
 
-  const salesDigit = useMutation(data.sales2d, {
+  const salesDigit = useMutation(data.sales3d, {
     onSuccess: () => {
       setIsUploading(false);
       setUploaded(true);
@@ -97,7 +97,7 @@ const Home = ({navigation}) => {
   return (
     <TwoDigitsContext.Provider value={bridge_value}>
       <MessageModalNormal show={is_uploading} width={'20%'}>
-        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+        <ActivityIndicator size={'large'} color={COLOR.primary3d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
       <MessageModalNormal show={uploaded}>
@@ -111,31 +111,31 @@ const Home = ({navigation}) => {
           Successfully Created Data
         </Text>
         <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.primary2d}}
-          onPress={() => navigation.navigate('2dreport')}>
+          style={{...styles.button, backgroundColor: COLOR.primary3d}}
+          onPress={() => navigation.navigate('3dreport')}>
           <Text style={{color: COLOR.black}}>Show Data</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.black}}
           onPress={() => {
             setUploaded(false);
-            navigation.navigate('stwod');
+          
           }}>
           <Text style={{color: COLOR.white}}>Close</Text>
         </TouchableOpacity>
       </MessageModalNormal>
       <ScrollView style={{flex: 1}} nestedScrollEnabled={true}>
-      <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
+        <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
           <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
         <Text
           style={{
             color: COLOR.black,
             fontWeight: 'bold',
             fontSize: 20,
-         
+            
             marginLeft:10
           }}>
-          Sales 2D Digits
+          Sales 3D Digits
         </Text>
         </View>
         <View
@@ -144,22 +144,22 @@ const Home = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <TouchableOpacity style={styles.tabbutton_active} onPress={()=> navigation.navigate('stwod')}>
-            <Text style={{color: 'white', fontSize: 18}}>2D</Text>
+          <TouchableOpacity style={styles.tabbutton} onPress={()=> navigation.navigate('stwod')}>
+            <Text style={{color: COLOR.black, fontSize: 18}}>2D</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabbutton} onPress={()=> navigation.navigate('sthreed')}>
-            <Text style={{color: 'black', fontSize: 18}}>3D</Text>
+          <TouchableOpacity style={styles.tabbutton_active} onPress={()=> navigation.navigate('sthreed')}>
+            <Text style={{color: COLOR.white, fontSize: 18}}>3D</Text>
           </TouchableOpacity>
         </View>
         <View style={{padding: 10}}>
           <View
             style={{
-              backgroundColor: COLOR.secondary2d,
+              backgroundColor: COLOR.primary3d,
               padding: 10,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{color: COLOR.black, fontSize: 20}}>
+            <Text style={{color: COLOR.white, fontSize: 20}}>
               စုစုပေါင်း - {numberWithCommas(SumValue)} Ks
             </Text>
           </View>
@@ -236,21 +236,21 @@ const Home = ({navigation}) => {
               </Text>
             </View>
             {digitsData.map((item, index) => (
-              <DigitsField key={index} item={item} index={index} />
+              <DigitsField key={index} item={item} index={index} threed={true} />
             ))}
           </KeyboardAvoidingView>
         </View>
         <View style={{padding: 10}}>
-          <TouchableOpacity style={{...styles.button,backgroundColor:COLOR.primary2d}} onPress={() => SaveDigits()}>
-            <Text style={{...styles.normaltextsize, color: COLOR.black}}>
+          <TouchableOpacity style={{...styles.button,backgroundColor:COLOR.primary3d}} onPress={() => SaveDigits()}>
+            <Text style={{...styles.normaltextsize, color: COLOR.white}}>
               သိမ်းမည်
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{...styles.button,backgroundColor:COLOR.secondary2d}}
-            onPress={() => navigation.navigate('2dreport')}>
-            <Text style={{...styles.normaltextsize, color: COLOR.black}}>
-              2D စာရင်းချုပ်ကြည့်မည်
+            style={{...styles.button,backgroundColor:COLOR.primary3d}}
+            onPress={() => navigation.navigate('3dreport')}>
+            <Text style={{...styles.normaltextsize, color: COLOR.white}}>
+              3D စာရင်းချုပ်ကြည့်မည်
             </Text>
           </TouchableOpacity>
         </View>
@@ -259,4 +259,4 @@ const Home = ({navigation}) => {
   );
 };
 
-export default Home;
+export default ThreedHome;

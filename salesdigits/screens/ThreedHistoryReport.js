@@ -34,9 +34,9 @@ const HistoryReport = ({navigation}) => {
 
   const [is_uploading, setIsUploading] = useState(false);
 
-  const sales_data = useQuery(['sales2dreport'], data.getsold2d);
+  const sales_data = useQuery(['sales3dreport'], data.getsold3d);
 
-  const postdata = useMutation(data.finish2d, {
+  const postdata = useMutation(data.finish3d, {
     onSuccess: () => {
       setIsUploading(false);
       setShowAlert(false);
@@ -51,6 +51,7 @@ const HistoryReport = ({navigation}) => {
       setShowAlert(false);
       luckynumberref.current.clear();
       setDate(new Date());
+      setIsUploading(false);
     },
   });
 
@@ -75,7 +76,7 @@ const HistoryReport = ({navigation}) => {
 
   const report = useQuery(
     ['lucky-report', date.toDateString()],
-    data.getfinish2d,
+    data.getfinish3d,
   );
 
   report.data && console.log(report.data.data);
@@ -83,7 +84,7 @@ const HistoryReport = ({navigation}) => {
   return (
     <>
       <MessageModalNormal show={is_uploading} width={'20%'}>
-        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+        <ActivityIndicator size={'large'} color={COLOR.primary3d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
       <MessageModalNormal
@@ -137,10 +138,10 @@ const HistoryReport = ({navigation}) => {
             color: COLOR.black,
             fontWeight: 'bold',
             fontSize: 20,
-           
+            
             marginLeft:10
           }}>
-          Save 2D Digits
+          Save 3D Digits
         </Text>
         </View>
         <View style={{padding: 10}}>
@@ -165,15 +166,15 @@ const HistoryReport = ({navigation}) => {
               value={luckynumber}
               onChangeText={e => setLuckyNumber(e)}
               keyboardType={'number-pad'}
-              maxLength={2}
+                            maxLength={3}
               ref={luckynumberref}
             />
             <Icon
               name={
-                luckynumber.length === 2 ? 'checkmark-circle' : 'close-circle'
+                luckynumber.length === 3? 'checkmark-circle' : 'close-circle'
               }
               size={20}
-              color={luckynumber.length === 2 ? COLOR.green : COLOR.redColor}
+              color={luckynumber.length === 3 ? COLOR.green : COLOR.redColor}
             />
           </View>
           <Text
@@ -238,25 +239,25 @@ const HistoryReport = ({navigation}) => {
         <View style={{padding: 10}}>
           {report.data && report.data.data !== 0 ? (
             <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.primary2d}}
+              style={{...styles.button, backgroundColor: COLOR.primary3d}}
               onPress={() =>
-                navigation.navigate('2dluckyreport', {
+                navigation.navigate('3dluckyreport', {
                   date: new Date().toDateString(),
                 })
               }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
+              <Text style={{fontWeight: 'bold', ...styles.normalboldsize,color:COLOR.white}}>
                 ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
               </Text>
             </TouchableOpacity>
           ) : null}
 
         <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.secondary2d}}
+              style={{...styles.button, backgroundColor: COLOR.secondary3d}}
               onPress={() =>
-                navigation.navigate('2dhistoryallreport')
+                navigation.navigate('3dhistoryallreport')
               }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-                ဒေတာအဟောင်းများကို ကြည့်မည်
+              <Text style={{fontWeight: 'bold', ...styles.normalboldsize,color:COLOR.black}}>
+               ဒေတာအဟောင်းများကို ကြည့်မည်
                  </Text>
             </TouchableOpacity>
         </View>

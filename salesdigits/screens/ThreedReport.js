@@ -23,7 +23,7 @@ import {MessageModalNormal} from '../extra/CustomModal';
 const Report = ({navigation,}) => {
   const [searchtext, setSearchText] = useState('');
 
-  const sales_data = useQuery(['sales2dreport'], data.getsold2d);
+  const sales_data = useQuery(['sales3dreport'], data.getsold3d);
 
   const [view, setView] =
     useState(true); /*true = Digits View And false = User View */
@@ -53,7 +53,7 @@ const Report = ({navigation,}) => {
       if (sales_data.data) {
         let data = sales_data.data.data;
         data.map((item, index) => {
-          item.two_sales_digits.map((item, index) => {
+          item.three_sales_digits.map((item, index) => {
             compund.push({number: item.number, amount: parseInt(item.amount)});
           });
         });
@@ -174,10 +174,10 @@ const Report = ({navigation,}) => {
             color: COLOR.black,
             fontWeight: 'bold',
             fontSize: 20,
-            letterSpacing: 1,
+            
             marginLeft:10
           }}>
-          2D Report
+           3D Report
         </Text>
         </View>
         <View
@@ -215,7 +215,7 @@ const Report = ({navigation,}) => {
                   setView(prev => !prev);
                 }}
                 style={{marginLeft: 10}}>
-                <Icon name="grid" color={view?COLOR.black:COLOR.secondary2d} size={20} />
+                <Icon name="grid" color={view?COLOR.black:COLOR.secondary3d} size={20} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {                  
@@ -285,7 +285,7 @@ const UserItem = ({item_data, index, setDetailData,onDetailShow}) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: index % 2 === 1 ? COLOR.primary2d : COLOR.secondary2d,
+        backgroundColor: index % 2 === 1 ? COLOR.primary3d : COLOR.secondary3d,
         margin: 5,
         padding: 10,
         borderRadius: 15,
@@ -333,7 +333,7 @@ const UserDetail = ({show, data,onClose}) => {
             <View>
               <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
               <ScrollView>
-                {data.two_sales_digits && data.two_sales_digits.map((item, index) => (
+                {data.three_sales_digits  && data.three_sales_digits.map((item, index) => (
                     <Cell
                       key={index}
                       data={[item.number, item.amount]}
@@ -363,7 +363,7 @@ const HeadingCell = ({data}) => {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLOR.primary2d,
+        backgroundColor: COLOR.primary3d,
        
       }}>
       <Text
@@ -371,6 +371,7 @@ const HeadingCell = ({data}) => {
           ...styles.normalboldsize,
           width: '30%',
           textAlign: 'center',
+          color:COLOR.white,
           ...styles.cell,
         }}>
         {data[0]}
@@ -380,6 +381,7 @@ const HeadingCell = ({data}) => {
           ...styles.normalboldsize,
           flex: 1,
           textAlign: 'center',
+          color:COLOR.white,
           ...styles.cell,
         }}>
         {data[1]}
@@ -395,7 +397,7 @@ const Cell = ({data, index}) => {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: index % 2 === 1 ? COLOR.secondary2d : COLOR.white,
+        backgroundColor: index % 2 === 1 ? COLOR.primary3d : COLOR.white,
       }}>
       <Text
         style={{
@@ -403,6 +405,7 @@ const Cell = ({data, index}) => {
           width: '30%',
           textAlign: 'center',
           ...styles.cell,
+          color: index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {data[0]}
       </Text>
@@ -413,6 +416,7 @@ const Cell = ({data, index}) => {
           textAlign: 'right',
           ...styles.cell,
           padding: 5,
+          color: index % 2 === 1 ? COLOR.white : COLOR.black,
         }}>
         {numberWithCommas(data[1])}
       </Text>
