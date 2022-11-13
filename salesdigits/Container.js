@@ -73,6 +73,7 @@ const Container = () => {
             ) : (
               <>
                 <Stack.Screen name="main" component={Main} />
+                <Stack.Screen name="settings" component={Main} />
                 <Stack.Screen name="2dluckyreport" component={LuckyReport} />
                 <Stack.Screen name="2dhistoryallreport" component={HistoryAllReport} />
                  <Stack.Screen name="2dfinishreport" component={FinishedReport} />

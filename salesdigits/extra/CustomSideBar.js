@@ -30,17 +30,19 @@ const CustomDrawer = props => {
             justifyContent: 'space-between',
           }}>
           <View style={{flexDirection: 'row'}}>
-            <Image
-              source={{
-                uri:
-                  axios.defaults.baseURL + profiledata.data.data.profileimage,
-              }}
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 100,
-              }}
-            />
+            {profiledata.data && (
+              <Image
+                source={{
+                  uri:
+                    axios.defaults.baseURL + profiledata.data.data.profileimage,
+                }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 100,
+                }}
+              />
+            )}
             <View>
               <View style={{marginTop: 10, marginLeft: 10}}>
                 <Text
@@ -57,7 +59,9 @@ const CustomDrawer = props => {
               </View>
             </View>
           </View>
-          <TouchableOpacity style={{top: 5}}>
+          <TouchableOpacity
+            style={{top: 5}}
+            onPress={() => console.log('Go to Settings')}>
             <Icon name={'settings-outline'} size={20} color={COLOR.black} />
           </TouchableOpacity>
         </View>
