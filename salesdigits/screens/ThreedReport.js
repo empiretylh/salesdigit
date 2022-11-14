@@ -272,58 +272,72 @@ const Report = ({navigation}) => {
           </View>
         </View>
         <View style={styles.divider} />
-        {sales_data.isFetching || sales_data.isLoading ? (
-          <ActivityIndicator size={'large'} color={COLOR.secondary3d} />
+        {sales_data.isLoading || sales_data.isFetching ? (
+          <ActivityIndicator size={'large'} color={COLOR.secondary2d} />
         ) : (
           <ScrollView style={{padding: 10}}>
-            {sales_data.data && isArryHasData(ComputeCompoundDigitsData) ? (
-              <>
-                {view ? (
-                  <View>
-                    <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
-                    <ScrollView>
-                      {sales_data.data &&
-                        ComputeCompoundDigitsData.map((item, index) => (
-                          <Cell
-                            key={index}
-                            data={[item.number, item.amount]}
-                            index={index}
-                          />
-                        ))}
-                      <View style={{...styles.divider, padding: 5}} />
-                    </ScrollView>
-                  </View>
+            {view ? (
+              <View>
+                <HeadingCell data={['ဂဏန်း', 'ငွေအမောက်']} />
+                <ScrollView>
+                  {sales_data.data &&
+                  isArryHasData(ComputeCompoundDigitsData) ? (
+                    ComputeCompoundDigitsData.map((item, index) => (
+                      <Cell
+                        key={index}
+                        data={[item.number, item.amount]}
+                        index={index}
+                      />
+                    ))
+                  ) : (
+                    <View
+                      style={{
+                        flex: 1,
+                        padding: 20,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{...styles.normalboldsize, color: COLOR.black}}>
+                        ဒေတာများ မရှိသေးပါ။
+                      </Text>
+                    </View>
+                  )}
+                  <View style={{...styles.divider, padding: 5}} />
+                </ScrollView>
+              </View>
+            ) : (
+              <View>
+                {isArryHasData(USalesData) ? (
+                  USalesData.reverse().map((item, index) => (
+                    <View key={index}>
+                      <UserItem
+                        item_data={item}
+                        index={index}
+                        setDetailData={setDetailData}
+                        onDetailShow={onDetailShow}
+                      />
+                    </View>
+                  ))
                 ) : (
-                  <View>
-                    {USalesData.reverse().map((item, index) => (
-                      <View key={index}>
-                        <UserItem
-                          item_data={item}
-                          index={index}
-                          setDetailData={setDetailData}
-                          onDetailShow={onDetailShow}
-                        />
-                      </View>
-                    ))}
-                    <View style={styles.divider} />
+                  <View
+                    style={{
+                      flex: 1,
+                      padding: 20,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{...styles.normalboldsize, color: COLOR.black}}>
+                      ဒေတာများ မရှိသေးပါ။
+                    </Text>
                   </View>
                 )}
-              </>
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  padding: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={{...styles.normalboldsize, color: COLOR.black}}>
-                  ဒေတာများ မရှိသေးပါ။
-                </Text>
+                <View style={styles.divider} />
               </View>
             )}
           </ScrollView>
-        )}
+          )}
       </View>
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {
   DrawerContentScrollView,
@@ -11,8 +11,14 @@ import data from '../server/data';
 import {COLOR, STYLE} from '../AssetDatabase';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {GoToSettingsContext} from '../context/Context';
+
 const CustomDrawer = props => {
   const profiledata = useQuery(['profile'], data.getProfile);
+
+  const Context  = useContext(GoToSettingsContext);
+
+
 
   return (
     <View style={{flex: 1}}>
@@ -26,7 +32,6 @@ const CustomDrawer = props => {
         <View
           style={{
             flexDirection: 'row',
-
             justifyContent: 'space-between',
           }}>
           <View style={{flexDirection: 'row'}}>
@@ -61,7 +66,7 @@ const CustomDrawer = props => {
           </View>
           <TouchableOpacity
             style={{top: 5}}
-            onPress={() => console.log('Go to Settings')}>
+            onPress={() => Context()}>
             <Icon name={'settings-outline'} size={20} color={COLOR.black} />
           </TouchableOpacity>
         </View>

@@ -1,12 +1,13 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import * as React from 'react';
-import {AuthContext} from './context/Context';
+import {AuthContext,SettingsContext} from './context/Context';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {useState, useEffect, useMemo} from 'react';
 import SignUp from './auth/Signup';
 import Login from './auth/Login';
 import Main from './screens/main';
+import Settings from  './screens/settings';
 import LuckyReport from './screens/LuckyReport';
 import HistoryAllReport from './screens/HistoryAllReport';
 import FinishedReport from './screens/finishreport';
@@ -26,6 +27,9 @@ const queryClient = new QueryClient();
 
 const Container = () => {
   const [token, setToken] = useState(null);
+  const [settings,setSettings] = useState({
+    ftype:'custom'
+  });
   const [load, setLoad] = useState(true);
   axios.defaults.baseURL = 'http://192.168.43.247:8000';
 
@@ -49,6 +53,35 @@ const Container = () => {
     getToken();
   }, [token]);
 
+  useEffect(() => {
+    const getSettings = async () => {
+      let sett;
+      try {
+        sett = await EncryptedStorage.getItem('settings');
+
+        if (sett !== null) {
+          setSettings(JSON.parse(sett))
+        }else{
+          await EncryptedStorage.setItem('settings',JSON.stringify(settings))
+        }
+        setLoad(false);
+      } catch (e) {
+        console.log(e);
+        setLoad(false);
+      }
+    };
+
+    getSettings();
+  }, [settings]);
+
+  const onSetSettings = (e,value)=>{
+    const a = [...settings]
+    const b = {a,[e]:value}
+    console.log('On Set Settings...')
+    setSettings(b)
+    EncryptedStorage.setItem('settings',JSON.stringify(b))
+  }
+
   const authvalue = useMemo(
     () => ({
       token,
@@ -56,12 +89,23 @@ const Container = () => {
     }),
     [token, setToken],
   );
+
+  const settingvalue = useMemo(
+    () => ({
+      settings,
+      onSetSettings,
+    }),
+    [settings, onSetSettings],
+  );
+
+
   if (load) {
     return <LoadSplashScreen />;
   }
 
   return (
     <QueryClientProvider client={queryClient}>
+    <SettingsContext.Provider value={settingvalue}>
       <AuthContext.Provider value={authvalue}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -73,7 +117,7 @@ const Container = () => {
             ) : (
               <>
                 <Stack.Screen name="main" component={Main} />
-                <Stack.Screen name="settings" component={Main} />
+                <Stack.Screen name="settings" component={Settings} />
                 <Stack.Screen name="2dluckyreport" component={LuckyReport} />
                 <Stack.Screen name="2dhistoryallreport" component={HistoryAllReport} />
                  <Stack.Screen name="2dfinishreport" component={FinishedReport} />
@@ -86,6 +130,7 @@ const Container = () => {
           </Stack.Navigator>
         </NavigationContainer>
       </AuthContext.Provider>
+      </SettingsContext.Provider>
     </QueryClientProvider>
   );
 };

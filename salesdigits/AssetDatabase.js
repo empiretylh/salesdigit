@@ -79,6 +79,23 @@ export const STYLE = StyleSheet.create({
     padding: 5,
     minHeight: 20,
   },
+  
+  chooseimagebutton: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    margin: 5,
+    borderRadius: 15,
+  },
+  chooseimagebutton_cancel: {
+    padding: 10,
+
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    margin: 5,
+    borderRadius: 15,
+  },
 });
 
 export const IMAGE = {
