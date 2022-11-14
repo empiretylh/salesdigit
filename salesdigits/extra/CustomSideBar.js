@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {
   DrawerContentScrollView,
@@ -16,9 +16,7 @@ import {GoToSettingsContext} from '../context/Context';
 const CustomDrawer = props => {
   const profiledata = useQuery(['profile'], data.getProfile);
 
-  const Context  = useContext(GoToSettingsContext);
-
-
+  const gotoSetting = useContext(GoToSettingsContext);
 
   return (
     <View style={{flex: 1}}>
@@ -29,11 +27,12 @@ const CustomDrawer = props => {
           paddingLeft: 10,
           paddingRight: 5,
         }}>
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-          }}>
+          }}
+          onPress={() => gotoSetting()}>
           <View style={{flexDirection: 'row'}}>
             {profiledata.data && (
               <Image
@@ -64,12 +63,10 @@ const CustomDrawer = props => {
               </View>
             </View>
           </View>
-          <TouchableOpacity
-            style={{top: 5}}
-            onPress={() => Context()}>
+          <TouchableOpacity style={{top: 5}} onPress={() => gotoSetting()}>
             <Icon name={'settings-outline'} size={20} color={COLOR.black} />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
         <View style={STYLE.divider} />
       </View>
       <DrawerContentScrollView>

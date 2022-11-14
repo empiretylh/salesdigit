@@ -1,10 +1,8 @@
 import axios from 'axios';
 
 class Database {
-  login({queryKey}) {
-    const [_, username, password] = queryKey;
-
-    return axios.post('/auth/login/', {username: username, password});
+  login(data) {
+    return axios.post('/auth/login/', data);
   }
 
   register(data) {
@@ -27,9 +25,7 @@ class Database {
     });
   }
 
-
   getHistory2d() {
-  
     return axios.get('/sd/api/historytwodigit/');
   }
 
@@ -41,10 +37,7 @@ class Database {
     return axios.get('/sd/api/salestwodigit/');
   }
 
-
- // 3D requests --------------------------------------------------------------------------------------
-
-
+  // 3D requests --------------------------------------------------------------------------------------
 
   finish3d(data) {
     return axios.post('/sd/api/finishthreedigit/', data);
@@ -61,9 +54,7 @@ class Database {
     });
   }
 
-
   getHistory3d() {
-  
     return axios.get('/sd/api/historythreedigit/');
   }
 
@@ -75,14 +66,9 @@ class Database {
     return axios.get('/sd/api/salesthreedigit/');
   }
 
-
-
-
-
-  getProfile(){
+  getProfile() {
     return axios.get('/api/profile/');
   }
-
 }
 
 export default new Database();

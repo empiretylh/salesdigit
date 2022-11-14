@@ -23,7 +23,11 @@ import {
 import {COLOR, numberWithCommas, STYLE as styles} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DigitsField from '../components/digitsfield';
-import {TwoDigitsContext, SettingsContext} from '../context/Context';
+import {
+  TwoDigitsContext,
+  SettingsContext,
+  AuthContext,
+} from '../context/Context';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import * as ImagePicker from 'react-native-image-picker';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -36,11 +40,32 @@ const Settings = ({navigation}) => {
 
   const [searchtext, setSearchText] = useState('');
 
-  const [settings,setSettings] = useState({ftype:'standard'})
+  const {settings, onSetSettings} = useContext(SettingsContext);
+  const {token, setToken} = useContext(AuthContext);
 
-  console.log(settings);
+  // console.log(settings);
 
   const [showmodal, setShowModal] = useState(false);
+
+  const PostImage = source => {
+    let data = new FormData();
+
+    data.append('image', source);
+    console.log(source);
+    console.log(data);
+    axios
+      .post('/api/profile/', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
+        profile.refetch();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const launchImageLibrary = () => {
     let options = {
@@ -68,79 +93,13 @@ const Settings = ({navigation}) => {
         };
 
         console.log(source, 'The ending...');
-        // PostImage(source);
+        PostImage(source);
       }
     });
   };
 
-  const RenderChooseImageModal = props => {
-    return (
-      <MessageModalNormal {...props}>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: '600',
-            padding: 10,
-            color: 'black',
-          }}>
-          Change Profile Picture
-        </Text>
-        <TouchableOpacity
-          style={styles.chooseimagebutton}
-          onPress={() => {
-            console.log('Take a photo');
-            LaunchCamera();
-            setShowModal(false);
-          }}>
-          <Icon name={'camera-outline'} size={25} />
-          <Text
-            style={{
-              fontSize: 18,
-              marginLeft: 5,
-              fontWeight: '500',
-              color: 'black',
-            }}>
-            Take Photo
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.chooseimagebutton}
-          onPress={() => {
-            console.log('Choose Image From Gallery');
-            launchImageLibrary();
-            setShowModal(false);
-          }}>
-          <Icon name={'image-outline'} size={25} />
-          <Text
-            style={{
-              fontSize: 18,
-              marginLeft: 5,
-              fontWeight: '500',
-              color: 'black',
-            }}>
-            Choose Image
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.chooseimagebutton_cancel}
-          onPress={() => setShowModal(false)}>
-          <Text
-            style={{
-              fontSize: 18,
-              marginLeft: 5,
-              fontWeight: '500',
-              color: 'black',
-            }}>
-            Cancel
-          </Text>
-        </TouchableOpacity>
-      </MessageModalNormal>
-    );
-  };
-
   return (
     <View style={{flex: 1}}>
-      <RenderChooseImageModal show={showmodal} />
       <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
         <Icon
           name="arrow-back"
@@ -185,7 +144,7 @@ const Settings = ({navigation}) => {
                 }}
                 resizeMode="cover"
               />
-              <TouchableOpacity onPress={() => setShowModal(true)}>
+              <TouchableOpacity onPress={() => launchImageLibrary()}>
                 <Icon
                   name="camera"
                   style={{
@@ -219,11 +178,12 @@ const Settings = ({navigation}) => {
       </View>
       <View style={styles.divider} />
       <View style={{flexDirection: 'row', padding: 10, alignItems: 'center'}}>
-        <Icon name={'settings-outline'} size={30} color={COLOR.black} />
-        <Text style={{...styles.normaltextsize, marginLeft: 5}}>Settings</Text>
+        <Icon name={'settings-outline'} size={25} color={COLOR.black} />
+        <Text style={{color: COLOR.black, marginLeft: 5}}>Settings</Text>
       </View>
-      <View style={{padding: 10}}>
-        <Text style={{color: 'black', fontSize: 18}}>Amount Fields</Text>
+      <View style={{padding: 10, paddingTop: 5}}>
+        {/* <Text style={{color: 'black'}}>Amount Fields</Text>
+
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
             style={{
@@ -249,7 +209,7 @@ const Settings = ({navigation}) => {
               padding: 10,
               borderRadius: 15,
             }}
-            onPress={() => console.log('what')}>
+            onPress={() => onSetSettings('ftype', 'custom')}>
             <Text
               style={{
                 color: settings.ftype === 'custom' ? COLOR.white : COLOR.black,
@@ -258,7 +218,29 @@ const Settings = ({navigation}) => {
               Custom
             </Text>
           </TouchableOpacity>
+        </View> */}
+        <View style={{...styles.divider}} />
+
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              ...styles.button,
+            }}
+            onPress={() => {
+              EncryptedStorage.removeItem('token');
+              setToken(null);
+            }}>
+            <Text
+              style={{
+                color: COLOR.white,
+                fontSize: 18,
+              }}>
+              Logout
+            </Text>
+          </TouchableOpacity>
         </View>
+        <View style={{...styles.divider}} />
       </View>
     </View>
   );
