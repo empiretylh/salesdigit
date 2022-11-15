@@ -256,10 +256,7 @@ const Pricing = ({navigation}) => {
             Pricing
           </Text>
 
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({name: 'profile', params: route.params})
-            }>
+          <TouchableOpacity onPress={() => navigation.navigate('settings')}>
             {pdata === null ? (
               <Image
                 source={{
@@ -391,7 +388,7 @@ const Pricing = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#357cf0',
+    backgroundColor: COLOR.secondary3d,
     padding: 10,
   },
   appbar: {

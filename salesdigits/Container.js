@@ -1,6 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import * as React from 'react';
-import {AuthContext, SettingsContext} from './context/Context';
+import {AuthContext, SettingsContext, PricingContext} from './context/Context';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {useState, useEffect, useMemo} from 'react';
@@ -31,6 +31,7 @@ const Container = () => {
     ftype: 'custom',
   });
   const [load, setLoad] = useState(true);
+  const [is_plan, setIs_Plan] = useState(true);
   axios.defaults.baseURL = 'http://192.168.43.247:8000';
 
   useEffect(() => {
@@ -74,14 +75,14 @@ const Container = () => {
     getSettings();
   }, []);
 
-  const onSetSettings = (e,value) => {
-    console.log(e)
-    
-     const b = {...settings, [e]: value};
-   console.log(b);
+  const onSetSettings = (e, value) => {
+    console.log(e);
+
+    const b = {...settings, [e]: value};
+    console.log(b);
     // console.log('On Set Settings...')
-     setSettings(b)
-   EncryptedStorage.setItem('settings',JSON.stringify(b))
+    setSettings(b);
+    EncryptedStorage.setItem('settings', JSON.stringify(b));
   };
 
   const authvalue = useMemo(
@@ -100,6 +101,14 @@ const Container = () => {
     [settings],
   );
 
+  const planvalue = useMemo(
+    () => ({
+      is_plan,
+      setIs_Plan,
+    }),
+    [is_plan],
+  );
+
   if (load) {
     return <LoadSplashScreen />;
   }
@@ -108,44 +117,58 @@ const Container = () => {
     <QueryClientProvider client={queryClient}>
       <SettingsContext.Provider value={settingvalue}>
         <AuthContext.Provider value={authvalue}>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
-              {token === null ? (
-                <>
-                  <Stack.Screen name="Signin" component={Login} />
-                  <Stack.Screen name="Singup" component={SignUp} />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen name="main" component={Main} />
-                  <Stack.Screen name="settings" component={Settings} />
-                  <Stack.Screen name="2dluckyreport" component={LuckyReport} />
-                  <Stack.Screen
-                    name="2dhistoryallreport"
-                    component={HistoryAllReport}
-                  />
-                  <Stack.Screen
-                    name="2dfinishreport"
-                    component={FinishedReport}
-                  />
+          <PricingContext.Provider value={planvalue}>
+            <NavigationContainer>
+              <Stack.Navigator screenOptions={{headerShown: false}}>
+                {token === null ? (
+                  <>
+                    <Stack.Screen name="Signin" component={Login} />
+                    <Stack.Screen name="Singup" component={SignUp} />
+                  </>
+                ) : (
+                  <>
+                    {is_plan ? (
+                      <>
+                        <Stack.Screen name="main" component={Main} />
+                        <Stack.Screen name="settings" component={Settings} />
+                        <Stack.Screen
+                          name="2dluckyreport"
+                          component={LuckyReport}
+                        />
+                        <Stack.Screen
+                          name="2dhistoryallreport"
+                          component={HistoryAllReport}
+                        />
+                        <Stack.Screen
+                          name="2dfinishreport"
+                          component={FinishedReport}
+                        />
 
-                  <Stack.Screen
-                    name="3dluckyreport"
-                    component={ThreedLuckyReport}
-                  />
-                  <Stack.Screen
-                    name="3dhistoryallreport"
-                    component={ThreedHistoryAllReport}
-                  />
-                  <Stack.Screen
-                    name="3dfinishreport"
-                    component={ThreedfinsihReport}
-                  />
-                  <Stack.Screen name='pricing' component={Pricing}/>
-                </>
-              )}
-            </Stack.Navigator>
-          </NavigationContainer>
+                        <Stack.Screen
+                          name="3dluckyreport"
+                          component={ThreedLuckyReport}
+                        />
+                        <Stack.Screen
+                          name="3dhistoryallreport"
+                          component={ThreedHistoryAllReport}
+                        />
+                        <Stack.Screen
+                          name="3dfinishreport"
+                          component={ThreedfinsihReport}
+                        />
+                        <Stack.Screen name="pricing" component={Pricing} />
+                      </>
+                    ) : (
+                      <>
+                        <Stack.Screen name="pricing" component={Pricing} />
+                        <Stack.Screen name="settings" component={Settings} />
+                      </>
+                    )}
+                  </>
+                )}
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PricingContext.Provider>
         </AuthContext.Provider>
       </SettingsContext.Provider>
     </QueryClientProvider>
