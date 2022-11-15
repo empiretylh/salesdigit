@@ -11,7 +11,7 @@ import Settings from './screens/settings';
 import LuckyReport from './screens/LuckyReport';
 import HistoryAllReport from './screens/HistoryAllReport';
 import FinishedReport from './screens/finishreport';
-
+import Pricing from './screens/pricing';
 import ThreedLuckyReport from './screens/ThreedLuckyReport';
 import ThreedHistoryAllReport from './screens/ThreedHistoryAllReport';
 import ThreedfinsihReport from './screens/Threedfinishreport';
@@ -141,7 +141,7 @@ const Container = () => {
                     name="3dfinishreport"
                     component={ThreedfinsihReport}
                   />
-                  <Stack.Screen name='pricing' component={}
+                  <Stack.Screen name='pricing' component={Pricing}/>
                 </>
               )}
             </Stack.Navigator>

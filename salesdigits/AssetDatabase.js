@@ -1,3 +1,5 @@
+import {Dimensions, StyleSheet, Alert} from 'react-native';
+
 export const COLOR = {
   black: '#000000',
   white: '#ffffff',
@@ -12,9 +14,9 @@ export const COLOR = {
   secondary2d: '#FFC700',
   deleteColor: '#FF3D00',
   redColor: '#FF0000',
+  windowWidth: Dimensions.get('window').width / 100,
+  windowHeight: Dimensions.get('window').height / 100,
 };
-
-import {StyleSheet} from 'react-native';
 
 export const STYLE = StyleSheet.create({
   tabbutton_active: {
@@ -102,6 +104,7 @@ export const IMAGE = {
   loadgif: require('./assets/spinnerloading.gif'),
   twodicon: require('./assets/twod.png'),
   threedicon: require('./assets/threed.png'),
+  app_logo:require('./assets/threed.png')
 };
 
 export const baseURL = 'http://192.168.43.247:8000';

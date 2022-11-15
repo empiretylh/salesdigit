@@ -219,6 +219,11 @@ const Settings = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View> */}
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity style={{...styles.button}} onPress={()=>navigation.navigate('pricing')}>
+            <Text style={{color: 'white'}}>Pricing</Text>
+          </TouchableOpacity>
+        </View>
         <View style={{...styles.divider}} />
 
         <View style={{flexDirection: 'row'}}>
