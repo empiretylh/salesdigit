@@ -7,11 +7,12 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
+  Image,
   Button,
   ActivityIndicator, 
   TouchableOpacity,
 } from 'react-native';
-import {COLOR} from '../AssetDatabase';
+import {COLOR,IMAGE} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useMutation} from '@tanstack/react-query';
 import data from '../server/data';
@@ -19,6 +20,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {AuthContext} from '../context/Context';
 import axios from 'axios';
 import {MessageModalNormal} from '../extra/CustomModal';
+
+
 const Login = ({navigation}) => {
   const [visible, setVisible] = React.useState(false);
 
@@ -53,6 +56,7 @@ const Login = ({navigation}) => {
       </MessageModalNormal>
       <View
         style={{alignItems: 'center', justifyContent: 'center', padding: 30}}>
+        <Image source={IMAGE.app_logo} style={{width:200,height:200}} resizeMode={'contain'}/>
         <Text style={{color: COLOR.black, fontSize: 20, fontWeight: 'bold'}}>
           Sales DIGITS
         </Text>

@@ -5,7 +5,6 @@ import {COLOR, numberWithCommas, STYLE as s} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SettingsContext, TwoDigitsContext} from '../context/Context';
 import {useNavigationState} from '@react-navigation/native';
-import DropDownPicker from 'react-native-dropdown-picker';
 const DigitsField = ({item, index, threed = false}) => {
   const [digits, setDigits] = useState(item.digits ? '' : item.digits);
   const [amount, setAmount] = useState(item.amount ? 0 : item.amount);
@@ -15,7 +14,7 @@ const DigitsField = ({item, index, threed = false}) => {
   const amountfield = useRef();
 
   const [show, setShow] = useState(false);
-  const [items, setItems] = useState([1000, 2000, 3000, 4000, 5000]);
+  const [items, setItems] = useState([1000, 2000, 3000, 4000, 5000,10000]);
 
 
   useMemo(() => {
@@ -48,6 +47,7 @@ const DigitsField = ({item, index, threed = false}) => {
           setDigits(e);
           if (e.length >= (threed ? 3 : 2)) {
             amountfield.current.focus();
+            
           }
         }}
       />

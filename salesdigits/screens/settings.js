@@ -220,32 +220,43 @@ const Settings = ({navigation}) => {
           </TouchableOpacity>
         </View> */}
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={{...styles.button}} onPress={()=>navigation.navigate('pricing')}>
-            <Text style={{color: 'white'}}>Pricing</Text>
+          <TouchableOpacity
+            style={{
+              ...styles.button,
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+            onPress={() => navigation.navigate('pricing')}>
+            <Icon name={'cash'} size={25} color={COLOR.white} />
+            <Text style={{color: 'white', marginLeft: 10}}>Pricing</Text>
           </TouchableOpacity>
         </View>
         <View style={{...styles.divider}} />
 
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
+ 
+      </View>
+      <View style={{flexDirection: 'row', position: 'absolute', bottom: 5,margin:10}}>
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            ...styles.button,
+            flexDirection: 'row',
+            backgroundColor:COLOR.redColor,
+          }}
+          onPress={() => {
+            EncryptedStorage.removeItem('token');
+            setToken(null);
+          }}>
+          <Icon name={'log-out'} size={25} color={COLOR.white} />
+          <Text
             style={{
-              flex: 1,
-              ...styles.button,
-            }}
-            onPress={() => {
-              EncryptedStorage.removeItem('token');
-              setToken(null);
+              color: COLOR.white,
+              fontSize: 18,
             }}>
-            <Text
-              style={{
-                color: COLOR.white,
-                fontSize: 18,
-              }}>
-              Logout
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{...styles.divider}} />
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

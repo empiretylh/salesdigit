@@ -23,6 +23,7 @@ import {
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
 import {MessageModalNormal} from '../extra/CustomModal';
+import LoadSplashScreen from '../extra/LoadingSplashScreen';
 const Pricing = ({navigation}) => {
   const [modalVisible, SetmodalVisible] = useState(false);
 
@@ -378,11 +379,7 @@ const Pricing = ({navigation}) => {
       </ScrollView>
     );
   }
-  return (
-    <View>
-      <Text>Loading</Text>
-    </View>
-  );
+  return <LoadSplashScreen/>
 };
 
 const styles = StyleSheet.create({

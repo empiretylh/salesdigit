@@ -8,21 +8,38 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import {useMutation, useQuery} from '@tanstack/react-query';
 import data from '../server/data';
-import {COLOR, STYLE} from '../AssetDatabase';
+import {COLOR, STYLE, IMAGE} from '../AssetDatabase';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {GoToSettingsContext} from '../context/Context';
+import {GoToSettingsContext, PricingContext} from '../context/Context';
 
 const CustomDrawer = props => {
   const profiledata = useQuery(['profile'], data.getProfile);
 
   const gotoSetting = useContext(GoToSettingsContext);
 
+  const {is_plan, setIs_Plan} = useContext(PricingContext);
+
+  useEffect(() => {
+    if (profiledata.data) {
+      setIs_Plan(profiledata.data.data.is_plan);
+    }
+  }, [profiledata.data]);
+
   return (
     <View style={{flex: 1}}>
+      <View style={{flexDirection: 'row', padding: 10,alignItems:'center',justifyContent:'center'}}>
+        <Image
+          source={IMAGE.app_logo}
+          style={{width: 30, height: 30, borderRadius: 80}}
+          resizeMode={'contain'}
+        />
+        <Text style={{color: COLOR.black, fontSize: 14,fontWeight:'bold',marginLeft:5}}>Sales Digits</Text>
+      </View>
+      <View style={STYLE.divider}/>
       <View
         style={{
-          paddingTop: 30,
+          paddingTop: 10,
           paddingBottom: 10,
           paddingLeft: 10,
           paddingRight: 5,
@@ -72,12 +89,7 @@ const CustomDrawer = props => {
       <DrawerContentScrollView>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
-      <View style={{flex: 1, position: 'absolute', bottom: 0}}>
-        <TouchableOpacity>
-          <Text>LogOut</Text>
-        </TouchableOpacity>
-        <Text>Version 1.0</Text>
-      </View>
+      
     </View>
   );
 };

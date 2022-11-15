@@ -104,7 +104,8 @@ export const IMAGE = {
   loadgif: require('./assets/spinnerloading.gif'),
   twodicon: require('./assets/twod.png'),
   threedicon: require('./assets/threed.png'),
-  app_logo:require('./assets/threed.png')
+  app_logo:require('./assets/icon.png'),
+  logo:require('./assets/AppIcon.png'),
 };
 
 export const baseURL = 'http://192.168.43.247:8000';

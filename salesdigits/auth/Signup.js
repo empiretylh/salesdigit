@@ -21,6 +21,7 @@ import Database from '../server/data';
 import {useMutation} from '@tanstack/react-query';
 import {AuthContext} from '../context/Context';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {MessageModalNormal} from '../extra/CustomModal';
 import axios from 'axios';
 const SignUp = ({navigation}) => {
   const [username, setUsername] = React.useState();
@@ -52,6 +53,13 @@ const SignUp = ({navigation}) => {
   return (
     <ScrollView>
       <View style={{padding: 10}}>
+      <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+       <Image source={IMAGE.app_logo} style={{width:200,height:200}} resizeMode={'contain'}/>
+        <Text style={{color: COLOR.black, fontSize: 20, fontWeight: 'bold'}}>
+          Sales DIGITS
+        </Text>
+        <Text style={{color: COLOR.black, fontSize: 12}}>Register Account</Text>
+       </View>
         <Text style={{color: 'black'}}>Username</Text>
         <View
           style={{
@@ -160,8 +168,12 @@ const SignUp = ({navigation}) => {
             onPress={() => setVisible(!visible)}
           />
         </View>
+        <Text style={{fontSize:13,color:COLOR.black}}>Make sure your password is easy to rememeber for you.</Text>
 
-        {load ? <ActivityIndicator size="large" /> : null}
+       <MessageModalNormal show={load} width={'20%'}>
+        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+        <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
+      </MessageModalNormal>
 
         <TouchableOpacity
           style={styles.button}

@@ -32,7 +32,7 @@ const Container = () => {
   });
   const [load, setLoad] = useState(true);
   const [is_plan, setIs_Plan] = useState(true);
-  axios.defaults.baseURL = 'http://192.168.43.247:8000';
+  axios.defaults.baseURL = 'https://empirepos.pythonanywhere.com';
 
   useEffect(() => {
     const getToken = async () => {

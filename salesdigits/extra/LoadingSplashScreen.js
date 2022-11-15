@@ -1,11 +1,17 @@
 import React from 'react';
-
-import {View, Text} from 'react-native';
+import {View, Text, Image,ActivityIndicator} from 'react-native';
+import {IMAGE as I} from '../AssetDatabase';
 
 const SplashScreen = () => {
   return (
-    <View>
-      <Text>Splash Screen</Text>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    
+      <Image
+        source={I.app_logo}
+        style={{width: 60, height: 60}}
+        resizeMode={'contain'}
+      />
+      <ActivityIndicator size={'small'} color={'#FF0C0C'} style={{marginTop:10}}/>
     </View>
   );
 };
