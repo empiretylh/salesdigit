@@ -249,9 +249,10 @@ const HistoryReport = ({navigation}) => {
                 style={{...styles.button, backgroundColor: COLOR.primary2d}}
                 onPress={() =>
                   navigation.navigate('2dluckyreport', {
-                    date: item.end_datetime
+                    date: item.end_datetime,
                   })
-                }>
+                }
+                key={index}>
                 <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
                   ယနေ့ {item.luckyNumber} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
                 </Text>

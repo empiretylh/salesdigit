@@ -81,7 +81,7 @@ export const STYLE = StyleSheet.create({
     padding: 5,
     minHeight: 20,
   },
-  
+
   chooseimagebutton: {
     padding: 10,
     flexDirection: 'row',
@@ -104,10 +104,10 @@ export const IMAGE = {
   loadgif: require('./assets/spinnerloading.gif'),
   twodicon: require('./assets/twod.png'),
   threedicon: require('./assets/threed.png'),
-  app_logo:require('./assets/icon.png'),
+  app_logo: require('./assets/icon.png'),
 };
 
-export const baseURL = 'http://192.168.43.247:8000';
+export const baseURL = 'https://empirepos.pythonanywhere.com';
 
 export const numberWithCommas = (x = 0) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
