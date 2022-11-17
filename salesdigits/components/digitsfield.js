@@ -33,11 +33,13 @@ const DigitsField = ({item, index, threed = false}) => {
       style={{
         flex: 1,
         flexDirection: 'row',
-
         borderBottomColor: COLOR.dividerColor,
         borderBottomWidth: 2,
       }}>
-      <Text style={{color: COLOR.black, fontWeight: 'bold'}}>{index + 1}</Text>
+     
+      <Text style={{color: COLOR.black, fontWeight: 'bold',fontSize:16,marginTop:15}}>
+        {index + 1}.</Text>
+   
       <TextInput
         style={{...s.textinput, flex: 1, height: 50}}
         keyboardType={'number-pad'}
@@ -51,6 +53,8 @@ const DigitsField = ({item, index, threed = false}) => {
           }
         }}
       />
+      
+    
       <View style={{flex: 1, flexDirection: 'column'}}>
         <View
           style={{...s.textinput, flex: 1, height: 50, flexDirection: 'row'}}>

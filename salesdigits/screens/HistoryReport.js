@@ -34,8 +34,10 @@ const HistoryReport = ({navigation}) => {
 
   const [is_uploading, setIsUploading] = useState(false);
 
+
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
 
+ 
   const postdata = useMutation(data.finish2d, {
     onSuccess: () => {
       setIsUploading(false);
@@ -75,14 +77,30 @@ const HistoryReport = ({navigation}) => {
 
   const report = useQuery(
     ['lucky-report', date.toDateString()],
-    data.getfinish2d,
+    data.getCheckTwoDigits,
   );
 
   report.data && console.log(report.data.data);
+  
+
+  const checkData = ()=>{
+    let a = report.data.data;
+    
+    if(a[0]===0 && a[1] === 0){
+      console.log('m')
+      return 'm'
+    }else if (a[0]>=1 && a[1] >= 1){
+      return true;
+    }
+      else{
+      console.log('e')
+      return 'e'
+    }
+  }
 
   return (
     <>
-      <MessageModalNormal show={is_uploading} width={'20%'}>
+      <MessageModalNormal show={is_uploading} width={'20%'} >
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
@@ -101,18 +119,19 @@ const HistoryReport = ({navigation}) => {
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.green}}
           onPress={() => {
-            if (sales_data.data && report.data && report.data.data === 0) {
+            if (sales_data.data && checkData) {
               if (sales_data.data.data.length >= 1) {
                 postdata.mutate({
                   luckynumber,
                   enddate: date,
+                  time:checkData(),
                 });
                 setShowAlert(false);
               } else {
-                alert('Error');
+                alert('No Report Data');
               }
             } else {
-              alert('Erorr');
+              alert('You can input 2 Lucky Number in One Day');
             }
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
@@ -236,19 +255,36 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
-          {report.data && report.data.data !== 0 ? (
+          {report.data && report.data.data[0]>=1 ? (
             <TouchableOpacity
               style={{...styles.button, backgroundColor: COLOR.primary2d}}
               onPress={() =>
                 navigation.navigate('2dluckyreport', {
                   date: new Date().toDateString(),
+                  time: 'm'
                 })
               }>
               <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-                ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
+                ယနေ့ {report.data.data[0]} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
               </Text>
             </TouchableOpacity>
           ) : null}
+          {report.data && report.data.data[1]>=1 ? (
+            <TouchableOpacity
+              style={{...styles.button, backgroundColor: COLOR.primary2d}}
+              onPress={() =>
+                navigation.navigate('2dluckyreport', {
+                  date: new Date().toDateString(),
+                  time: 'e'
+                })
+              }>
+              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
+                ယနေ့ {report.data.data[1]} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
+              </Text>
+            </TouchableOpacity>
+          ) : null}
+
+          <View style={styles.divider}/>
 
         <TouchableOpacity
               style={{...styles.button, backgroundColor: COLOR.secondary2d}}

@@ -245,8 +245,13 @@ const Settings = ({navigation}) => {
             backgroundColor:COLOR.redColor,
           }}
           onPress={() => {
-            EncryptedStorage.removeItem('token');
-            setToken(null);
+            Alert.alert('', 'Are you sure want to logout?', [
+              {text: 'Yes', onPress: ()=>{
+                EncryptedStorage.removeItem('token');
+                setToken(null);
+              }},
+              {text: 'No'},
+            ])          
           }}>
           <Icon name={'log-out'} size={25} color={COLOR.white} />
           <Text

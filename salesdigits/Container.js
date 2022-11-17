@@ -20,6 +20,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import axios from 'axios';
 import LoadSplashScreen from './extra/LoadingSplashScreen';
+import {baseURL} from './AssetDatabase';
 
 const Stack = createStackNavigator();
 8;
@@ -32,7 +33,8 @@ const Container = () => {
   });
   const [load, setLoad] = useState(true);
   const [is_plan, setIs_Plan] = useState(true);
-  axios.defaults.baseURL = 'https://empirepos.pythonanywhere.com';
+  
+  axios.defaults.baseURL = baseURL;
 
   useEffect(() => {
     const getToken = async () => {

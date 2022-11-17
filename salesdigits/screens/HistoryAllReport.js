@@ -76,6 +76,7 @@ const HistoryAllReport = ({navigation}) => {
         onPress={() =>
           navigation.navigate('2dfinishreport', {
             date: new Date(item.end_datetime).toDateString(),
+            time: item.time, 
           })
         }>
         <View

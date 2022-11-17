@@ -21,8 +21,8 @@ import data from '../server/data';
 
 import {MessageModalNormal} from '../extra/CustomModal';
 const LuckyReport = ({navigation, route}) => {
-  const {date} = route.params;
-  const report = useQuery(['lucky-report', date], data.getfinish2d);
+  const {date,time} = route.params;
+  const report = useQuery(['lucky-report', date,time], data.getfinish2d);
 
   const [searchtext, setSearchText] = useState('');
 

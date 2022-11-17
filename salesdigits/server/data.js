@@ -15,12 +15,13 @@ class Database {
   }
 
   getfinish2d({queryKey}) {
-    const [_, date] = queryKey;
+    const [_, date,time] = queryKey;
     console.log(date);
 
     return axios.get('/sd/api/finishtwodigit/', {
       params: {
         datetime: date,
+        time:time,
       },
     });
   }
@@ -35,6 +36,15 @@ class Database {
 
   getsold2d(data) {
     return axios.get('/sd/api/salestwodigit/');
+  }
+
+  getCheckTwoDigits({queryKey}){
+    const [_, date] = queryKey;
+    return axios.get('/sd/api/checktwodigtis/', {
+      params: {
+        datetime: date,
+      },
+    });
   }
 
   // 3D requests --------------------------------------------------------------------------------------
