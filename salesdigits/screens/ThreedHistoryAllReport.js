@@ -35,6 +35,8 @@ const HistoryAllReport = ({navigation}) => {
   const [is_uploading, setIsUploading] = useState(false);
   const [date, setDate] = useState();
   const [open, setOpen] = useState(false);
+  const [deletedata, setDeleteData] = useState([]);
+  const [showDelete, setShowDelete] = useState(false);
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -68,11 +70,28 @@ const HistoryAllReport = ({navigation}) => {
     }
   }, [report.data, date]);
 
+  const deleteItem = useMutation(data.deletefinish3d, {
+    onSuccess: () => {
+      report.refetch();
+      setIsUploading(false);
+    },
+    onMutate: () => {
+      setIsUploading(true);
+    },
+    onError: () => {
+      setIsUploading(false);
+    },
+  });
+
   const Item = ({item, index}) => {
     return (
       <TouchableOpacity
         key={index}
         style={{margin: 5}}
+        onLongPress={()=>{
+          setDeleteData(item);
+          setShowDelete(true);
+        }}
         onPress={() =>
           navigation.navigate('3dfinishreport', {
             date: new Date(item.end_datetime).toDateString(),
@@ -153,19 +172,54 @@ const HistoryAllReport = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </MessageModalNormal>
-      <View style={{flex: 1}}>
-               <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='arrow-back' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.goBack()}/>
-        <Text
-          style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-            
-            marginLeft:10
+      <MessageModalNormal
+        show={showDelete}
+        onClose={() => setShowDelete(false)}>
+        {deletedata ? (
+          <Text
+            style={{
+              color: COLOR.redColor,
+              fontWeight: 'bold',
+              fontSize: 20,
+              textAlign: 'center',
+            }}>
+            ဤ {deletedata.luckyNumber} ဂဏန်းနှင့် သတ်ဆိုင်သော ဒေတာများကို
+            ဖျက်မှာသေချာပါသလား
+          </Text>
+        ) : null}
+        <TouchableOpacity
+          style={{...styles.button, backgroundColor: COLOR.redColor}}
+          onPress={() => {
+            deleteItem.mutate({
+              datetime: new Date(deletedata.end_datetime).toDateString(),
+            });
+
+            setShowDelete(false);
           }}>
-           3D History
-        </Text>
+          <Text style={{...styles.normaltextsize, color: 'white'}}>
+            Delete Anyway
+          </Text>
+        </TouchableOpacity>
+      </MessageModalNormal>
+      <View style={{flex: 1}}>
+        <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+          <Icon
+            name="arrow-back"
+            size={30}
+            color={COLOR.black}
+            style={{paddingTop: 5}}
+            onPress={() => navigation.goBack()}
+          />
+          <Text
+            style={{
+              color: COLOR.black,
+              fontWeight: 'bold',
+              fontSize: 20,
+
+              marginLeft: 10,
+            }}>
+            3D History
+          </Text>
         </View>
         <View
           style={{

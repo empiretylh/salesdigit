@@ -34,16 +34,15 @@ const HistoryReport = ({navigation}) => {
 
   const [is_uploading, setIsUploading] = useState(false);
 
-
   const sales_data = useQuery(['sales2dreport'], data.getsold2d);
 
- 
   const postdata = useMutation(data.finish2d, {
     onSuccess: () => {
       setIsUploading(false);
       setShowAlert(false);
       luckynumberref.current.clear();
       report.refetch();
+      sales_data.refetch();
       setDate(new Date());
     },
     onMutate: () => {
@@ -81,26 +80,10 @@ const HistoryReport = ({navigation}) => {
   );
 
   report.data && console.log(report.data.data);
-  
-
-  const checkData = ()=>{
-    let a = report.data.data;
-    
-    if(a[0]===0 && a[1] === 0){
-      console.log('m')
-      return 'm'
-    }else if (a[0]>=1 && a[1] >= 1){
-      return true;
-    }
-      else{
-      console.log('e')
-      return 'e'
-    }
-  }
 
   return (
     <>
-      <MessageModalNormal show={is_uploading} width={'20%'} >
+      <MessageModalNormal show={is_uploading} width={'20%'}>
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
@@ -112,19 +95,18 @@ const HistoryReport = ({navigation}) => {
           ပေါက်ဂဏန်းသည် {luckynumber} ဖြစ်သည်မှာ သေချာပါသလား?
         </Text>
         <Text style={{color: COLOR.black, padding: 5}}>
-          ဤ functions သည် လက်ရှိ စာရင်းပြုလုပ်နေသာ ဒေတာများကို ပေါက်ဂဏန်းနှင့်အတူ
-          မှတ်သားထားမည်ဖြစ်ပါသည်။ ၎င်းဒေတာများအား Report အကန့်တွင်
-          မမြင်နိုင်တော့ပါ။
+          ဤ functions သည် လက်ရှိ စာရင်းပြုလုပ်နေသာ ဒေတာများကို
+          ပေါက်ဂဏန်းနှင့်အတူ မှတ်သားထားမည်ဖြစ်ပါသည်။ ၎င်းဒေတာများအား Report
+          အကန့်တွင် မမြင်နိုင်တော့ပါ။
         </Text>
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.green}}
           onPress={() => {
-            if (sales_data.data && checkData) {
+            if (sales_data.data && sales_data.data.data !== 0) {
               if (sales_data.data.data.length >= 1) {
                 postdata.mutate({
                   luckynumber,
                   enddate: date,
-                  time:checkData(),
                 });
                 setShowAlert(false);
               } else {
@@ -149,18 +131,24 @@ const HistoryReport = ({navigation}) => {
         </TouchableOpacity>
       </MessageModalNormal>
       <View style={{flex: 1}}>
-        <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
-        <Text
-          style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-           
-            marginLeft:10
-          }}>
-          Save 2D Digits
-        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+          <Icon
+            name="menu"
+            size={30}
+            color={COLOR.black}
+            style={{paddingTop: 5}}
+            onPress={() => navigation.openDrawer()}
+          />
+          <Text
+            style={{
+              color: COLOR.black,
+              fontWeight: 'bold',
+              fontSize: 20,
+
+              marginLeft: 10,
+            }}>
+            Save 2D Digits
+          </Text>
         </View>
         <View style={{padding: 10}}>
           <Text
@@ -255,46 +243,30 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
-          {report.data && report.data.data[0]>=1 ? (
-            <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.primary2d}}
-              onPress={() =>
-                navigation.navigate('2dluckyreport', {
-                  date: new Date().toDateString(),
-                  time: 'm'
-                })
-              }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-                ယနေ့ {report.data.data[0]} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
-              </Text>
-            </TouchableOpacity>
-          ) : null}
-          {report.data && report.data.data[1]>=1 ? (
-            <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.primary2d}}
-              onPress={() =>
-                navigation.navigate('2dluckyreport', {
-                  date: new Date().toDateString(),
-                  time: 'e'
-                })
-              }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-                ယနေ့ {report.data.data[1]} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
-              </Text>
-            </TouchableOpacity>
-          ) : null}
+          {report.data &&
+            report.data.data.map((item, index) => (
+              <TouchableOpacity
+                style={{...styles.button, backgroundColor: COLOR.primary2d}}
+                onPress={() =>
+                  navigation.navigate('2dluckyreport', {
+                    date: item.end_datetime
+                  })
+                }>
+                <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
+                  ယနေ့ {item.luckyNumber} ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
+                </Text>
+              </TouchableOpacity>
+            ))}
 
-          <View style={styles.divider}/>
+          <View style={styles.divider} />
 
-        <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.secondary2d}}
-              onPress={() =>
-                navigation.navigate('2dhistoryallreport')
-              }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
-                ဒေတာအဟောင်းများကို ကြည့်မည်
-                 </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={{...styles.button, backgroundColor: COLOR.secondary2d}}
+            onPress={() => navigation.navigate('2dhistoryallreport')}>
+            <Text style={{fontWeight: 'bold', ...styles.normalboldsize}}>
+              ဒေတာအဟောင်းများကို ကြည့်မည်
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </>

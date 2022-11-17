@@ -15,13 +15,21 @@ class Database {
   }
 
   getfinish2d({queryKey}) {
-    const [_, date,time] = queryKey;
+    const [_, date] = queryKey;
     console.log(date);
 
     return axios.get('/sd/api/finishtwodigit/', {
       params: {
         datetime: date,
-        time:time,
+      },
+    });
+  }
+
+  deletefinish2d(data) {
+    console.log(data);
+    return axios.delete('/sd/api/finishtwodigit/', {
+      params: {
+        datetime: data.datetime,
       },
     });
   }
@@ -38,7 +46,7 @@ class Database {
     return axios.get('/sd/api/salestwodigit/');
   }
 
-  getCheckTwoDigits({queryKey}){
+  getCheckTwoDigits({queryKey}) {
     const [_, date] = queryKey;
     return axios.get('/sd/api/checktwodigtis/', {
       params: {
@@ -60,6 +68,15 @@ class Database {
     return axios.get('/sd/api/finishthreedigit/', {
       params: {
         datetime: date,
+      },
+    });
+  }
+
+  deletefinish3d(data) {
+    console.log(data);
+    return axios.delete('/sd/api/finishthreedigit/', {
+      params: {
+        datetime: data.datetime,
       },
     });
   }

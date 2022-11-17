@@ -1,4 +1,4 @@
-package com.salesdigit.newarchitecture;
+package com.empire.salesdigit.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.salesdigit.BuildConfig;
-import com.salesdigit.newarchitecture.components.MainComponentsRegistry;
-import com.salesdigit.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.empire.salesdigit.BuildConfig;
+import com.empire.salesdigit.newarchitecture.components.MainComponentsRegistry;
+import com.empire.salesdigit.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

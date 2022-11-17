@@ -107,7 +107,7 @@ export const IMAGE = {
   app_logo:require('./assets/icon.png'),
 };
 
-export const baseURL = 'https://empirepos.pythonanywhere.com';
+export const baseURL = 'http://192.168.43.247:8000';
 
 export const numberWithCommas = (x = 0) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

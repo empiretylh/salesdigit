@@ -72,8 +72,6 @@ const Home = ({navigation}) => {
     },
     onError: e => {
       setIsUploading(false);
-      alert('Connection Error, Please Check Your Connection')
-      console.log(e);
     },
   });
 
@@ -127,19 +125,31 @@ const Home = ({navigation}) => {
           <Text style={{color: COLOR.white}}>Close</Text>
         </TouchableOpacity>
       </MessageModalNormal>
-      <ScrollView ref={scrollViewRef} style={{flex: 1}} nestedScrollEnabled={true} onContentSizeChange={() => {scrollViewRef.current?.scrollToEnd()}}>
-      <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
-        <Text
-          style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-         
-            marginLeft:10
-          }}>
-          Sales 2D Digits
-        </Text>
+      <ScrollView
+        ref={scrollViewRef}
+        style={{flex: 1}}
+        nestedScrollEnabled={true}
+        onContentSizeChange={() => {
+          scrollViewRef.current?.scrollToEnd();
+        }}>
+        <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+          <Icon
+            name="menu"
+            size={30}
+            color={COLOR.black}
+            style={{paddingTop: 5}}
+            onPress={() => navigation.openDrawer()}
+          />
+          <Text
+            style={{
+              color: COLOR.black,
+              fontWeight: 'bold',
+              fontSize: 20,
+
+              marginLeft: 10,
+            }}>
+            Sales 2D Digits
+          </Text>
         </View>
         <View
           style={{
@@ -147,10 +157,14 @@ const Home = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <TouchableOpacity style={styles.tabbutton_active} onPress={()=> navigation.navigate('stwod')}>
+          <TouchableOpacity
+            style={styles.tabbutton_active}
+            onPress={() => navigation.navigate('stwod')}>
             <Text style={{color: 'white', fontSize: 18}}>2D</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabbutton} onPress={()=> navigation.navigate('sthreed')}>
+          <TouchableOpacity
+            style={styles.tabbutton}
+            onPress={() => navigation.navigate('sthreed')}>
             <Text style={{color: 'black', fontSize: 18}}>3D</Text>
           </TouchableOpacity>
         </View>
@@ -244,13 +258,15 @@ const Home = ({navigation}) => {
           </KeyboardAvoidingView>
         </View>
         <View style={{padding: 10}}>
-          <TouchableOpacity style={{...styles.button,backgroundColor:COLOR.primary2d}} onPress={() => SaveDigits()}>
+          <TouchableOpacity
+            style={{...styles.button, backgroundColor: COLOR.primary2d}}
+            onPress={() => SaveDigits()}>
             <Text style={{...styles.normaltextsize, color: COLOR.black}}>
               သိမ်းမည်
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{...styles.button,backgroundColor:COLOR.secondary2d}}
+            style={{...styles.button, backgroundColor: COLOR.secondary2d}}
             onPress={() => navigation.navigate('2dreport')}>
             <Text style={{...styles.normaltextsize, color: COLOR.black}}>
               2D စာရင်းချုပ်ကြည့်မည်

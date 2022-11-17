@@ -95,9 +95,9 @@ const HistoryReport = ({navigation}) => {
           ပေါက်ဂဏန်းသည် {luckynumber} ဖြစ်သည်မှာ သေချာပါသလား?
         </Text>
         <Text style={{color: COLOR.black, padding: 5}}>
-          ဤ functions သည် လက်ရှိ စာရင်းပြုလုပ်နေသာ ဒေတာများကို ပေါက်ဂဏန်းနှင့်အတူ
-          မှတ်သားထားမည်ဖြစ်ပါသည်။ ၎င်းဒေတာများအား Report အကန့်တွင်
-          မမြင်နိုင်တော့ပါ။
+          ဤ functions သည် လက်ရှိ စာရင်းပြုလုပ်နေသာ ဒေတာများကို
+          ပေါက်ဂဏန်းနှင့်အတူ မှတ်သားထားမည်ဖြစ်ပါသည်။ ၎င်းဒေတာများအား Report
+          အကန့်တွင် မမြင်နိုင်တော့ပါ။
         </Text>
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.green}}
@@ -131,18 +131,45 @@ const HistoryReport = ({navigation}) => {
         </TouchableOpacity>
       </MessageModalNormal>
       <View style={{flex: 1}}>
-        <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
-        <Text
+        <View
           style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-            
-            marginLeft:10
+            flexDirection: 'row',
+            alignItems: 'center',
+
+            justifyContent: 'space-between',
           }}>
-          Save 3D Digits
-        </Text>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+            <Icon
+              name="menu"
+              size={30}
+              color={COLOR.black}
+              style={{paddingTop: 5}}
+              onPress={() => navigation.openDrawer()}
+            />
+            <Text
+              style={{
+                color: COLOR.black,
+                fontWeight: 'bold',
+                fontSize: 20,
+
+                marginLeft: 10,
+              }}>
+              Save 3D Digits
+            </Text>
+          </View>
+          <Icon
+            name="refresh"
+            size={25}
+            color={COLOR.black}
+            style={{
+              padding: 10,
+            }}
+            onPress={() => {
+              report.refetch();
+              sales_data.refetch();
+            }}
+          />
         </View>
         <View style={{padding: 10}}>
           <Text
@@ -166,12 +193,12 @@ const HistoryReport = ({navigation}) => {
               value={luckynumber}
               onChangeText={e => setLuckyNumber(e)}
               keyboardType={'number-pad'}
-                            maxLength={3}
+              maxLength={3}
               ref={luckynumberref}
             />
             <Icon
               name={
-                luckynumber.length === 3? 'checkmark-circle' : 'close-circle'
+                luckynumber.length === 3 ? 'checkmark-circle' : 'close-circle'
               }
               size={20}
               color={luckynumber.length === 3 ? COLOR.green : COLOR.redColor}
@@ -245,21 +272,29 @@ const HistoryReport = ({navigation}) => {
                   date: new Date().toDateString(),
                 })
               }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize,color:COLOR.white}}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  ...styles.normalboldsize,
+                  color: COLOR.white,
+                }}>
                 ယနေ့ ဂဏန်းပေါက်သော သူများကိုကြည့်မည်
               </Text>
             </TouchableOpacity>
           ) : null}
 
-        <TouchableOpacity
-              style={{...styles.button, backgroundColor: COLOR.secondary3d}}
-              onPress={() =>
-                navigation.navigate('3dhistoryallreport')
-              }>
-              <Text style={{fontWeight: 'bold', ...styles.normalboldsize,color:COLOR.black}}>
-               ဒေတာအဟောင်းများကို ကြည့်မည်
-                 </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={{...styles.button, backgroundColor: COLOR.secondary3d}}
+            onPress={() => navigation.navigate('3dhistoryallreport')}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                ...styles.normalboldsize,
+                color: COLOR.black,
+              }}>
+              ဒေတာအဟောင်းများကို ကြည့်မည်
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </>

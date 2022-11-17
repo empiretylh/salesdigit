@@ -35,8 +35,8 @@ const HistoryAllReport = ({navigation}) => {
   const [is_uploading, setIsUploading] = useState(false);
   const [date, setDate] = useState();
   const [open, setOpen] = useState(false);
-
-  const [showAlert, setShowAlert] = useState(false);
+  const [deletedata, setDeleteData] = useState([]);
+  const [showDelete, setShowDelete] = useState(false);
 
   const luckynumberref = useRef();
 
@@ -68,15 +68,31 @@ const HistoryAllReport = ({navigation}) => {
     }
   }, [report.data, date]);
 
+  const deleteItem = useMutation(data.deletefinish2d, {
+    onSuccess: () => {
+      report.refetch();
+      setIsUploading(false);
+    },
+    onMutate: () => {
+      setIsUploading(true);
+    },
+    onError: () => {
+      setIsUploading(false);
+    },
+  });
+
   const Item = ({item, index}) => {
     return (
       <TouchableOpacity
         key={index}
         style={{margin: 5}}
+        onLongPress={() => {
+          setDeleteData(item);
+          setShowDelete(true);
+        }}
         onPress={() =>
           navigation.navigate('2dfinishreport', {
-            date: new Date(item.end_datetime).toDateString(),
-            time: item.time, 
+            date: item.end_datetime,
           })
         }>
         <View
@@ -111,62 +127,58 @@ const HistoryAllReport = ({navigation}) => {
         <ActivityIndicator size={'large'} color={COLOR.primary2d} />
         <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
       </MessageModalNormal>
+      <MessageModalNormal show={is_uploading} width={'20%'}>
+        <ActivityIndicator size={'large'} color={COLOR.primary2d} />
+        <Text style={{color: COLOR.black, textAlign: 'center'}}>Creating</Text>
+      </MessageModalNormal>
       <MessageModalNormal
-        show={showAlert}
-        width={'98%'}
-        onClose={() => setShowAlert(false)}>
-        <Text style={{...styles.normalboldsize}}>
-          ပေါက်ဂဏန်းသည် {luckynumber} ဖြစ်သည်မှာ သေချာပါသလား?
-        </Text>
-        <Text style={{color: COLOR.black, padding: 5}}>
-          ဤ functions သည် လက်ရှိ စာရင်းပြုလုပ်နေသာ ဒေတာများကို ပေါက်ဂဏန်းအတူ
-          မှတ်သားထားမည်ဖြစ်ပါသည်။ ၎င်းဒေတာများအား Report အကန့်တွင်
-          မမြင်နိုင်တော့ပါ။
-        </Text>
-        <TouchableOpacity
-          style={{...styles.button, backgroundColor: COLOR.green}}
-          onPress={() => {
-            if (sales_data.data && report.data && report.data.data === 0) {
-              if (sales_data.data.data.length >= 1) {
-                postdata.mutate({
-                  luckynumber,
-                  enddate: date,
-                });
-                setShowAlert(false);
-              } else {
-                alert('Error');
-              }
-            } else {
-              alert('Erorr');
-            }
-          }}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
-            သေချာပါသည်။
+        show={showDelete}
+        onClose={() => setShowDelete(false)}>
+        {deletedata ? (
+          <Text
+            style={{
+              color: COLOR.redColor,
+              fontWeight: 'bold',
+              fontSize: 20,
+              textAlign: 'center',
+            }}>
+            ဤ {deletedata.luckyNumber} ဂဏန်းနှင့် သတ်ဆိုင်သော ဒေတာများကို
+            ဖျက်မှာသေချာပါသလား
           </Text>
-        </TouchableOpacity>
+        ) : null}
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.redColor}}
           onPress={() => {
-            setShowAlert(false);
+            deleteItem.mutate({
+              datetime: deletedata.end_datetime,
+            });
+
+            setShowDelete(false);
           }}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
-            ပယ်ဖျက်မည်
+          <Text style={{...styles.normaltextsize, color: 'white'}}>
+            Delete Anyway
           </Text>
         </TouchableOpacity>
       </MessageModalNormal>
       <View style={{flex: 1}}>
-              <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Icon name='arrow-back' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.goBack()}/>
-        <Text
-          style={{
-            color: COLOR.black,
-            fontWeight: 'bold',
-            fontSize: 20,
-            
-            marginLeft:10
-          }}>
-           2D History Report
-        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+          <Icon
+            name="arrow-back"
+            size={30}
+            color={COLOR.black}
+            style={{paddingTop: 5}}
+            onPress={() => navigation.goBack()}
+          />
+          <Text
+            style={{
+              color: COLOR.black,
+              fontWeight: 'bold',
+              fontSize: 20,
+
+              marginLeft: 10,
+            }}>
+            2D History Report
+          </Text>
         </View>
         <View
           style={{

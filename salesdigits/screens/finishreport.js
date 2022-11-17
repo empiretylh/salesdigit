@@ -23,9 +23,9 @@ import {MessageModalNormal} from '../extra/CustomModal';
 const FinishedReport = ({navigation, route}) => {
   const [searchtext, setSearchText] = useState('');
 
-  const {date,time} = route.params;
+  const {date} = route.params;
 
-  const sales_data = useQuery(['sales2dreport', date,time], data.getfinish2d);
+  const sales_data = useQuery(['sales2dreport', date], data.getfinish2d);
 
   const [view, setView] =
     useState(true); /*true = Digits View And false = User View */
@@ -202,7 +202,7 @@ const FinishedReport = ({navigation, route}) => {
             onPress={() =>
               navigation.navigate('2dluckyreport', {
                 date: date,
-                time:time,
+                
               })
             }>
             <Icon name="document" size={25} color={COLOR.black} />
