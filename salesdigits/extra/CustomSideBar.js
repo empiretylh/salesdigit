@@ -22,6 +22,7 @@ const CustomDrawer = props => {
 
   useEffect(() => {
     if (profiledata.data) {
+    
       setIs_Plan(profiledata.data.data.is_plan);
     }
   }, [profiledata.data]);

@@ -72,6 +72,7 @@ const Home = ({navigation}) => {
     },
     onError: e => {
       setIsUploading(false);
+      alert('Connection Error, Please Check Your Connection')
       console.log(e);
     },
   });

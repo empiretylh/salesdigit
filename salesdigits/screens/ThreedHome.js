@@ -30,6 +30,8 @@ const ThreedHome = ({navigation}) => {
   const pfieldref = useRef(0);
   const phoneno_field = useRef(0);
 
+  const scrollViewRef = useRef(null);
+
   const newForm = useMemo(() => {
     let d = digitsData[digitsData.length - 1];
     if (d.amount > 0 && d.digits) {
@@ -70,6 +72,7 @@ const ThreedHome = ({navigation}) => {
     },
     onError: e => {
       setIsUploading(false);
+      alert('Connection Error, Please Check Your Connection')
       console.log(e);
     },
   });
@@ -124,7 +127,7 @@ const ThreedHome = ({navigation}) => {
           <Text style={{color: COLOR.white}}>Close</Text>
         </TouchableOpacity>
       </MessageModalNormal>
-      <ScrollView style={{flex: 1}} nestedScrollEnabled={true}>
+      <ScrollView style={{flex: 1}} ref={scrollViewRef} nestedScrollEnabled={true}  onContentSizeChange={() => {scrollViewRef.current?.scrollToEnd()}}>
         <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
           <Icon name='menu' size={30} color={COLOR.black} style={{paddingTop:5}} onPress={()=> navigation.openDrawer()}/>
         <Text

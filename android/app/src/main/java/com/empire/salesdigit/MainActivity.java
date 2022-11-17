@@ -1,4 +1,4 @@
-package com.salesdigit;
+package com.empire.salesdigit;
 
 
 import com.facebook.react.ReactActivity;
