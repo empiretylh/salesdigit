@@ -34,6 +34,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import data from '../server/data';
 import axios from 'axios';
 import {MessageModalNormal} from '../extra/CustomModal';
+import CheckBox from '@react-native-community/checkbox';
 
 const Settings = ({navigation}) => {
   const profile = useQuery(['profile'], data.getProfile);
@@ -182,6 +183,17 @@ const Settings = ({navigation}) => {
         <Text style={{color: COLOR.black, marginLeft: 5}}>Settings</Text>
       </View>
       <View style={{padding: 10, paddingTop: 5}}>
+        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-between',alignItems:'center',padding:10}} onPress={()=>{
+          onSetSettings('combine',!settings.combine)
+        }}>
+          <Text style={{color: 'black',fontSize:15}}>Combine Same Name</Text>
+          <CheckBox
+            disabled={false}
+            value={settings.combine}
+            onValueChange={newValue => onSetSettings('combine', newValue)}
+          />
+        </TouchableOpacity>
+
         {/* <Text style={{color: 'black'}}>Amount Fields</Text>
 
         <View style={{flexDirection: 'row'}}>
@@ -233,25 +245,32 @@ const Settings = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={{...styles.divider}} />
-
- 
       </View>
-      <View style={{flexDirection: 'row', position: 'absolute', bottom: 5,margin:10}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          position: 'absolute',
+          bottom: 5,
+          margin: 10,
+        }}>
         <TouchableOpacity
           style={{
             flex: 1,
             ...styles.button,
             flexDirection: 'row',
-            backgroundColor:COLOR.redColor,
+            backgroundColor: COLOR.redColor,
           }}
           onPress={() => {
             Alert.alert('', 'Are you sure want to logout?', [
-              {text: 'Yes', onPress: ()=>{
-                EncryptedStorage.removeItem('token');
-                setToken(null);
-              }},
+              {
+                text: 'Yes',
+                onPress: () => {
+                  EncryptedStorage.removeItem('token');
+                  setToken(null);
+                },
+              },
               {text: 'No'},
-            ])          
+            ]);
           }}>
           <Icon name={'log-out'} size={25} color={COLOR.white} />
           <Text

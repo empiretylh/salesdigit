@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/checkbox": "^0.5.14",
     "@react-native-masked-view/masked-view": "^0.2.8",
     "@react-navigation/drawer": "^6.5.0",
     "@react-navigation/native": "^6.0.13",

@@ -30,6 +30,7 @@ const Container = () => {
   const [token, setToken] = useState(null);
   const [settings, setSettings] = useState({
     ftype: 'custom',
+    combine: false,
   });
   const [load, setLoad] = useState(true);
   const [is_plan, setIs_Plan] = useState(true);
@@ -63,7 +64,16 @@ const Container = () => {
         sett = await EncryptedStorage.getItem('settings');
 
         if (sett !== null) {
-          setSettings(JSON.parse(sett));
+          let r = JSON.parse(sett);
+
+          if(Object.keys(r).includes('combine')){
+            console.log('INClude Combine Key');
+            setSettings(JSON.parse(sett));
+          }else{
+            console.log('Not Include Combine Key',r)
+            await EncryptedStorage.setItem('settings', JSON.stringify(settings));
+          }
+          
         } else {
           await EncryptedStorage.setItem('settings', JSON.stringify(settings));
         }

@@ -1,5 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
-import {useState, useMemo, useEffect, useCallback, useRef} from 'react';
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
 import * as React from 'react';
 
 import {
@@ -16,7 +23,7 @@ import {
 import {COLOR, numberWithCommas, STYLE as styles} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DigitsField from '../components/digitsfield';
-import {TwoDigitsContext} from '../context/Context';
+import {TwoDigitsContext, SettingsContext} from '../context/Context';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
@@ -26,6 +33,8 @@ const FinishedReport = ({navigation, route}) => {
   const {date} = route.params;
 
   const sales_data = useQuery(['sales2dreport', date], data.getfinish2d);
+
+  const {settings, onSetSettings} = useContext(SettingsContext);
 
   const [view, setView] =
     useState(true); /*true = Digits View And false = User View */
@@ -97,11 +106,42 @@ const FinishedReport = ({navigation, route}) => {
 
     if (view === false) {
       if (sales_data.data) {
-        let data = sales_data.data.data;
+        let data = JSON.parse(JSON.stringify(sales_data.data.data));
+        let search_result;
 
-        let search_result = data.filter(e =>
-          e.customername.toLowerCase().includes(searchtext.toLowerCase()),
-        );
+        console.log(data, 'Whey Data data');
+
+        if (settings.combine) {
+          let A = {};
+
+          console.log(A);
+          let c = data;
+
+          c.map((item, index) => {
+            console.log(
+              'COmputing : ',
+              item.customername + ' ' + item.totalprice,
+            );
+            if (!A[item.customername]) {
+              A[item.customername] = item;
+            } else {
+              A[item.customername].totalprice =
+                parseInt(A[item.customername].totalprice) +
+                parseInt(item.totalprice);
+              A[item.customername].two_sales_digits = A[
+                item.customername
+              ].two_sales_digits.concat(item.two_sales_digits);
+            }
+          });
+
+          search_result = Object.values(A);
+
+          console.log(search_result, 'Finisehd');
+        } else {
+          search_result = data.filter(e =>
+            e.customername.toLowerCase().includes(searchtext.toLowerCase()),
+          );
+        }
 
         let sorted_finalresult = search_result.sort((a, b) => {
           if (sorttype === 'Name') {
@@ -116,7 +156,7 @@ const FinishedReport = ({navigation, route}) => {
         return sorted_finalresult;
       }
     }
-  }, [sales_data, searchtext, sorttype]);
+  }, [sales_data, searchtext, sorttype, settings.combine]);
 
   const [showSort, setShowSort] = useState(false);
 
@@ -171,7 +211,7 @@ const FinishedReport = ({navigation, route}) => {
       </MessageModalNormal>
 
       <View style={{flex: 1}}>
-      <View
+        <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -202,7 +242,6 @@ const FinishedReport = ({navigation, route}) => {
             onPress={() =>
               navigation.navigate('2dluckyreport', {
                 date: date,
-                
               })
             }>
             <Icon name="document" size={25} color={COLOR.black} />

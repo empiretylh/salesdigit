@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {useState, useMemo, useEffect, useCallback, useRef} from 'react';
+import {useState, useMemo, useEffect, useCallback, useRef,useContext} from 'react';
 import * as React from 'react';
 
 import {
@@ -21,7 +21,7 @@ import {
 } from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DigitsField from '../components/digitsfield';
-import {TwoDigitsContext} from '../context/Context';
+import {TwoDigitsContext,  SettingsContext} from '../context/Context';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import data from '../server/data';
 import {MessageModalNormal} from '../extra/CustomModal';
@@ -37,7 +37,9 @@ const Report = ({navigation}) => {
 
   const [detailData, setDetailData] = useState([]);
 
-  sales_data.data && console.log(sales_data.data.data);
+    const {settings, onSetSettings} = useContext(SettingsContext);
+  
+
 
   const SumTotalValue = useMemo(() => {
     let value = 0;
@@ -100,11 +102,38 @@ const Report = ({navigation}) => {
 
     if (view === false) {
       if (sales_data.data) {
-        let data = sales_data.data.data;
+        let data = JSON.parse(JSON.stringify(sales_data.data.data));
+        let search_result ;
 
-        let search_result = data.filter(e =>
+        console.log(data,'Whey Data data')
+
+        if(settings.combine){
+
+            let A ={}
+
+            console.log(A)
+            let c = data;
+
+
+            c.map((item,index)=>{
+              console.log('COmputing : ', item.customername + ' '+ item.totalprice)
+              if(!A[item.customername]){
+                A[item.customername] = item;
+              }else{
+                A[item.customername].totalprice = parseInt(A[item.customername].totalprice) + parseInt(item.totalprice)
+                 A[item.customername].two_sales_digits = A[item.customername].two_sales_digits.concat(item.two_sales_digits)
+              }
+            })
+
+            search_result = Object.values(A)
+
+            console.log(search_result,'Finisehd')
+
+        }else{
+          search_result = data.filter(e =>
           e.customername.toLowerCase().includes(searchtext.toLowerCase()),
         );
+        }
 
         let sorted_finalresult = search_result.sort((a, b) => {
           if (sorttype === 'Name') {
@@ -119,7 +148,7 @@ const Report = ({navigation}) => {
         return sorted_finalresult;
       }
     }
-  }, [sales_data, searchtext, sorttype]);
+  }, [sales_data, searchtext, sorttype,settings.combine]);
 
   const [showSort, setShowSort] = useState(false);
 
@@ -346,7 +375,7 @@ const Report = ({navigation}) => {
 const UserItem = ({item_data, index, setDetailData, onDetailShow}) => {
   let data = item_data;
 
-  console.log(item_data);
+  // console.log(item_data,'HERE');
   let date = new Date(data.datetime);
 
   return (

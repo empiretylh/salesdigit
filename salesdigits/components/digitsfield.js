@@ -3,31 +3,44 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {COLOR, numberWithCommas, STYLE as s} from '../AssetDatabase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SettingsContext, TwoDigitsContext} from '../context/Context';
+import {
+  SettingsContext,
+  TwoDigitsContext,
+  ToolsContext,
+} from '../context/Context';
 import {useNavigationState} from '@react-navigation/native';
 const DigitsField = ({item, index, threed = false}) => {
-  const [digits, setDigits] = useState(item.digits ? '' : item.digits);
-  const [amount, setAmount] = useState(item.amount ? 0 : item.amount);
+  const [digits, setDigits] = useState();
+  const [amount, setAmount] = useState();
+
   const {digitsData, setDigitsData, newForm, DeleteDigits} =
     useContext(TwoDigitsContext);
+
+  const {vtool, setVTool, setVdata} = !threed && useContext(ToolsContext);
 
   const amountfield = useRef();
 
   const [show, setShow] = useState(false);
-  const [items, setItems] = useState([1000, 2000, 3000, 4000, 5000,10000]);
-
+  const [items, setItems] = useState([1000, 2000, 3000, 4000, 5000, 10000]);
 
   useMemo(() => {
     let digits_clone = [...digitsData];
-    digits_clone[index] = {...digits_clone[index], ['digits']: digits};
-    digits_clone[index] = {...digits_clone[index], ['amount']: amount};
+    if(digits)
+      digits_clone[index] = {...digits_clone[index], ['digits']: digits};
+    if(amount)
+      digits_clone[index] = {...digits_clone[index], ['amount']: amount};
     setDigitsData(digits_clone);
-
-    console.log(digits, index);
-
-    console.log(digitsData);
+    if (!threed) {
+      setVdata({digits: digits, amount: amount});
+    }
+ 
   }, [digits, amount]);
 
+ useEffect(()=>{
+  setDigits(item.digits);
+  setAmount(item.amount);
+ },[])
+  
   return (
     <View
       style={{
@@ -36,25 +49,36 @@ const DigitsField = ({item, index, threed = false}) => {
         borderBottomColor: COLOR.dividerColor,
         borderBottomWidth: 2,
       }}>
-     
-      <Text style={{color: COLOR.black, fontWeight: 'bold',fontSize:16,marginTop:15}}>
-        {index + 1}.</Text>
-   
+      <Text
+        style={{
+          color: COLOR.black,
+          fontWeight: 'bold',
+          fontSize: 16,
+          marginTop: 15,
+        }}>
+        {index + 1}.
+      </Text>
+
       <TextInput
         style={{...s.textinput, flex: 1, height: 50}}
         keyboardType={'number-pad'}
+        defaulValue={item.digits}
+        value={item.digits}
         placeholder={threed ? '000 - 999' : '00 - 99'}
         maxLength={threed ? 3 : 2}
         onChangeText={e => {
           setDigits(e);
           if (e.length >= (threed ? 3 : 2)) {
             amountfield.current.focus();
-            
+          }
+        }}
+        onFocus={e => {
+          if (!threed) {
+            setVTool(false);
           }
         }}
       />
-      
-    
+
       <View style={{flex: 1, flexDirection: 'column'}}>
         <View
           style={{...s.textinput, flex: 1, height: 50, flexDirection: 'row'}}>
@@ -68,10 +92,18 @@ const DigitsField = ({item, index, threed = false}) => {
             }}
             keyboardType={'number-pad'}
             placeholder={'ငွေအမောက်'}
-           value={amount!==0 && amount+''}
+            value={item.amount !== 0 && item.amount + ''}
             onChangeText={e => setAmount(e)}
             ref={amountfield}
             selectTextOnFocus={true}
+            onFocus={e => {
+              if (digits.length >= (threed ? 3 : 2) && !threed) {
+                  setVTool(true);
+                  setTimeout(()=>{
+                    setVTool(false);
+                  },20000)
+              }
+            }}
           />
           <TouchableOpacity onPress={() => setShow(prev => !prev)}>
             <Icon

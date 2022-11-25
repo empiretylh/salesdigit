@@ -10,3 +10,6 @@ export const GoToSettingsContext = createContext(null);
 export const SettingsContext = createContext(null);
 
 export const PricingContext = createContext(null);
+
+
+export const ToolsContext = createContext(null);

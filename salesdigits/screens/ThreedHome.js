@@ -117,7 +117,7 @@ const ThreedHome = ({navigation}) => {
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.primary3d}}
           onPress={() => navigation.navigate('3dreport')}>
-          <Text style={{color: COLOR.black}}>Show Data</Text>
+          <Text style={{color: COLOR.white}}>Show Data</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{...styles.button, backgroundColor: COLOR.black}}
