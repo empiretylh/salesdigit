@@ -40,6 +40,7 @@ const HistoryReport = ({navigation}) => {
     onSuccess: () => {
       setIsUploading(false);
       setShowAlert(false);
+      titletextRef.current.clear();
       luckynumberref.current.clear();
       report.refetch();
       sales_data.refetch();
@@ -74,6 +75,10 @@ const HistoryReport = ({navigation}) => {
 
   const luckynumberref = useRef();
 
+  const titleRef = useRef();
+  const titletextRef = useRef();
+
+
   const report = useQuery(
     ['lucky-report', date.toDateString()],
     data.getCheckTwoDigits,
@@ -103,10 +108,13 @@ const HistoryReport = ({navigation}) => {
           style={{...styles.button, backgroundColor: COLOR.green}}
           onPress={() => {
             if (sales_data.data && sales_data.data.data !== 0) {
+              if(!titletextRef.current)
+                  return alert('Please Fill Title')
               if (sales_data.data.data.length >= 1) {
                 postdata.mutate({
                   luckynumber,
                   enddate: date,
+                  title:titletextRef.current
                 });
                 setShowAlert(false);
               } else {
@@ -131,6 +139,7 @@ const HistoryReport = ({navigation}) => {
         </TouchableOpacity>
       </MessageModalNormal>
       <View style={{flex: 1}}>
+      <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
         <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
           <Icon
             name="menu"
@@ -149,7 +158,22 @@ const HistoryReport = ({navigation}) => {
             }}>
             Save 2D Digits
           </Text>
-        </View>
+            </View>
+           <TouchableOpacity
+            onPress={() => {
+              report.refetch();
+              sales_data.refetch();
+            }}>
+            <Icon
+              name="refresh"
+              size={25}
+              color={COLOR.black}
+              style={{
+                padding: 10,
+              }}
+            />
+          </TouchableOpacity>
+      </View>
         <View style={{padding: 10}}>
           <Text
             style={{
@@ -181,6 +205,27 @@ const HistoryReport = ({navigation}) => {
               }
               size={20}
               color={luckynumber.length === 2 ? COLOR.green : COLOR.redColor}
+            />
+          </View>
+             <Text
+            style={{
+              color: 'black',
+              ...styles.normaltextsize,
+              fontWeight: 'bold',
+            }}>
+            ခေါင်းစဉ်
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              ...styles.textinput,
+            }}>
+            <TextInput
+              style={{...styles.textinput, padding: 0, margin: 0, flex: 1}}
+              placeholder={'ခေါင်းစဉ်ထည့်ရန်'}
+              ref={titleRef}
+              onChangeText={(e)=>titletextRef.current=e}
             />
           </View>
           <Text
@@ -243,7 +288,9 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
-          {report.data &&
+          {report.isFetching ? 
+            <ActivityIndicator size={'large'} color={COLOR.primary2d}/>
+            : report.data &&
             report.data.data.map((item, index) => (
               <TouchableOpacity
                 style={{...styles.button, backgroundColor: COLOR.primary2d}}

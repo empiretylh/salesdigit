@@ -115,9 +115,12 @@ const HistoryAllReport = ({navigation}) => {
             }}>
             {item.luckyNumber}
           </Text>
-          <Text style={{color: COLOR.white, fontSize: 20, marginLeft: 10}}>
+          <View style={{flexDirection:'column',marginLeft:10}}>
+           {item.title && <Text style={{color:COLOR.white,fontWeight:'bold',fontSize:18}}>{item.title}</Text>}
+          <Text style={{color: COLOR.white, fontSize: 20}}>
             {new Date(item.end_datetime).toLocaleString()}
           </Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -200,6 +203,15 @@ const HistoryAllReport = ({navigation}) => {
             Delete Anyway
           </Text>
         </TouchableOpacity>
+           <TouchableOpacity
+          style={{...styles.button, backgroundColor: COLOR.primary3d}}
+          onPress={() => {
+              setShowDelete(false);
+          }}>
+          <Text style={{...styles.normaltextsize, color: 'white'}}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
       </MessageModalNormal>
       <View style={{flex: 1}}>
         <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
@@ -253,7 +265,8 @@ const HistoryAllReport = ({navigation}) => {
           />
         </View>
         <View>
-          {report.data
+          {report.isFetching?
+            <ActivityIndicator size={'large'} color={COLOR.primary3d}/>:report.data
             ? reportfilter.map((item, index) => (
                 <Item index={index} item={item} key={index} />
               ))

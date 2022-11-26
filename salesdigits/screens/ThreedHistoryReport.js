@@ -41,7 +41,9 @@ const HistoryReport = ({navigation}) => {
       setIsUploading(false);
       setShowAlert(false);
       luckynumberref.current.clear();
+      titleRef.current.clear();
       report.refetch();
+
       setDate(new Date());
     },
     onMutate: () => {
@@ -73,13 +75,16 @@ const HistoryReport = ({navigation}) => {
   const [showAlert, setShowAlert] = useState(false);
 
   const luckynumberref = useRef();
+  const titleRef = useRef();
+
+  const titletextRef = useRef();
 
   const report = useQuery(
     ['3d-lucky-report', date.toDateString()],
     data.getfinish3d,
   );
 
-  report.data && console.log(report.data.data);
+  report.data && console.log(report.data.data, 'Hey Report Data');
 
   return (
     <>
@@ -103,17 +108,20 @@ const HistoryReport = ({navigation}) => {
           style={{...styles.button, backgroundColor: COLOR.green}}
           onPress={() => {
             if (sales_data.data && report.data && report.data.data === 0) {
-              if (sales_data.data.data.length >= 1) {
+              if (sales_data.data.data.length >= 1 && titletextRef.current) {
                 postdata.mutate({
-                  luckynumber,
+                  luckynumber: luckynumber,
                   enddate: date,
+                  title: titletextRef.current,
                 });
                 setShowAlert(false);
               } else {
-                alert('Error');
+                alert('No Report 3D Data');
               }
             } else {
-              alert('Erorr');
+              alert(
+                'ယနေ့ပေါက်ဂဏန်း တစ်ခေါက်ထည့်ပြီးသောကြောင့် ထပ်ထည့်၍ မရတော့ပါ။ နောက်နေ့ (သို့) ရက်စွဲပြောင်းပြီးမှထည့်ပါ။',
+              );
             }
           }}>
           <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
@@ -158,18 +166,20 @@ const HistoryReport = ({navigation}) => {
               Save 3D Digits
             </Text>
           </View>
-          <Icon
-            name="refresh"
-            size={25}
-            color={COLOR.black}
-            style={{
-              padding: 10,
-            }}
+          <TouchableOpacity
             onPress={() => {
               report.refetch();
               sales_data.refetch();
-            }}
-          />
+            }}>
+            <Icon
+              name="refresh"
+              size={25}
+              color={COLOR.black}
+              style={{
+                padding: 10,
+              }}
+            />
+          </TouchableOpacity>
         </View>
         <View style={{padding: 10}}>
           <Text
@@ -202,6 +212,27 @@ const HistoryReport = ({navigation}) => {
               }
               size={20}
               color={luckynumber.length === 3 ? COLOR.green : COLOR.redColor}
+            />
+          </View>
+          <Text
+            style={{
+              color: 'black',
+              ...styles.normaltextsize,
+              fontWeight: 'bold',
+            }}>
+            ခေါင်းစဉ်
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              ...styles.textinput,
+            }}>
+            <TextInput
+              style={{...styles.textinput, padding: 0, margin: 0, flex: 1}}
+              placeholder={'ခေါင်းစဉ်ထည့်ရန်'}
+              ref={titleRef}
+              onChangeText={e => (titletextRef.current = e)}
             />
           </View>
           <Text
@@ -264,7 +295,9 @@ const HistoryReport = ({navigation}) => {
         </View>
         <View style={styles.divider} />
         <View style={{padding: 10}}>
-          {report.data && report.data.data !== 0 ? (
+          {report.isFetching ? 
+            <ActivityIndicator size={'large'} color={COLOR.primary3d}/>
+            : report.data && report.data.data !== 0 ? (
             <TouchableOpacity
               style={{...styles.button, backgroundColor: COLOR.primary3d}}
               onPress={() =>
