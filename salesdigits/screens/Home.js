@@ -169,7 +169,7 @@ const Home = ({navigation}) => {
           amount: vdata.amount,
         },
         {
-          digits: '90',
+          digits: '99',
           amount: vdata.amount,
         },
       ];
