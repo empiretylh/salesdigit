@@ -108,7 +108,7 @@ const Home = ({navigation}) => {
 
   const AddRoundData = useCallback(() => {
     if (vdata.digits) {
-      console.log('Rounding Data..... blah balh');
+      
       let d = digitsData[digitsData.length - 1];
 
       var rdigits = vdata.digits[1] + vdata.digits[0];
@@ -127,8 +127,7 @@ const Home = ({navigation}) => {
 
   const AddPuData = useCallback(() => {
     if (vdata.digits) {
-      console.log('Pull Data..... blah balh');
-
+    
       const data = JSON.parse(JSON.stringify(digitsData));
       data.pop();
       var cdata = [
